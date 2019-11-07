@@ -1,4 +1,4 @@
-package java.ToolsInterfaces;
+package java.Interfaces;
 
 import java.ParameterClasses.AuthTokenInterface;
 import java.ParameterClasses.DataSetIdInterface;
