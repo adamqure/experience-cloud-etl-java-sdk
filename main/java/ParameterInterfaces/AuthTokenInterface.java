@@ -1,4 +1,4 @@
-package java.ParameterClasses;
+package java.ParameterInterfaces;
 
 import java.util.Date;
 
