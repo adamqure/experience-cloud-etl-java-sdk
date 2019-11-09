@@ -1,4 +1,4 @@
-package java.Interfaces;
+package java.ToolInterfaces;
 
 public interface CataloguerInterface
 {

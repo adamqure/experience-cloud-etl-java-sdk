@@ -1,6 +1,9 @@
 package java;
 
-import java.Interfaces.*;
+import java.AEPTools.AEPCataloguer;
+import java.AEPTools.AEPIngestor;
+import java.AEPTools.AEPValidator;
+import java.ToolInterfaces.*;
 
 /**
  * Basic importer class that implements the ImporterInterface
@@ -14,10 +17,8 @@ public class Importer
 
     public Importer()
     {
-        dataCataloguer = new Cataloguer();
-        dataIngestor = new Ingestor();
-        schemaValidator = new Validator();
+        dataCataloguer = new AEPCataloguer();
+        dataIngestor = new AEPIngestor();
+        schemaValidator = new AEPValidator();
     }
-
-
 }
