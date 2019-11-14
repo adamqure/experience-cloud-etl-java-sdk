@@ -8,6 +8,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.*;
 
+import java.ParameterClasses.AuthInfoInterface;
 import java.util.Map;
 
 
@@ -24,6 +25,11 @@ public interface API {
     String datasetURL = "foundation/catalog/dataSets";
     String exportURL = "foundation/export/files/";
     String checkStatusURL = "foundation/catalog/batch/";
+    String authTokenURL = "https://ims-na1.adobelogin.com/ims/";
+
+    //Exchange JWT for Auth Token
+    @POST("exchange/jwt/")
+    Call<Void> getAuthToken(@HeaderMap Map<String, String> headers, @Body AuthInfoInterface body);
 
     //Create a Batch for Upload
     @POST("foundation/import/batches/")
