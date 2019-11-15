@@ -71,8 +71,8 @@ public interface API {
     //Get a specific Dataset object by ID
     @GET("foundation/catalog/dataSets{id}")
     Call<Void> getDatasetById(@HeaderMap Map<String, String> headers,
-                                      @Path("id") String id,
-                                      @Query("properties") String[] properties);
+                              @Path("id") String id,
+                              @Query("properties") String[] properties);
 
     /**
      * Insert API Calls here in the following format
