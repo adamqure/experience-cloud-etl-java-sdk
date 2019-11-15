@@ -15,10 +15,10 @@ public class Importer
     private CataloguerInterface dataCataloguer;
     private ValidatorInterface schemaValidator;
 
-    public Importer()
-    {
+    public Importer() {
         dataCataloguer = new AEPCataloguer();
         dataIngestor = new AEPIngestor();
         schemaValidator = new AEPValidator();
     }
+
 }
