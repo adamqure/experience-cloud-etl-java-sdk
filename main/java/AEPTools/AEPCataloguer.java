@@ -1,6 +1,6 @@
 package java.AEPTools;
 
-import java.ToolsInterfaces.CataloguerInterface;
+import java.ToolInterfaces.CataloguerInterface;
 
 /**
  * Basic AEPCataloguer that implements the AEPCataloguer Interface

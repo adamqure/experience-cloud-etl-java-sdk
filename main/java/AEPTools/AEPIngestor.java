@@ -3,7 +3,7 @@ package java.AEPTools;
 import java.ParameterInterfaces.AuthTokenInterface;
 import java.ParameterInterfaces.DataSetIdInterface;
 import java.ParameterInterfaces.SchemaInterface;
-import java.ToolsInterfaces.IngestorInterface;
+import java.ToolInterfaces.IngestorInterface;
 import java.io.FileInputStream;
 
 /**

@@ -3,7 +3,7 @@ package java;
 import java.AEPTools.AEPCataloguer;
 import java.AEPTools.AEPIngestor;
 import java.AEPTools.AEPValidator;
-import java.ToolsInterfaces.*;
+import java.ToolInterfaces.*;
 
 /**
  * Basic importer class that implements the ImporterInterface
