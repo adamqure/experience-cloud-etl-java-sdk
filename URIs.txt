@@ -1,0 +1,98 @@
+BASE_URI = "https://platform.adobe.io/data/"
+
+// These are attached immediately after the root URI to make 
+// various API calls (usually requires adding more information)
+
+IMPORT_URI = "foundation/import/batches/"
+// This ^ is the default API for batch ingestion
+
+CONNECTOR_URI = "foundation/connectors/connections/"
+// This ^ is the API for connecting various data sources 
+// into the same dataset
+
+DATA_INLET_URI = "core/edge/inlet/"
+// this ^ is the API for streaming ingestion
+
+DATASET_URI = "foundation/catalog/dataSets"
+// This ^ is the URI for getting datasets and/or dataset IDs
+// Most calls require extra information
+// Some endpoints require a / after, others a ?
+// This endpoint can also be used to modify, delete, update, or replace 
+// something in a dataset
+
+EXPORT_URI = "foundation/export/files/"
+// This ^ URI is for retrieving more granular details about a batch of data
+
+CHECK_STATUS_URI = "foundation/catalog/batch/"
+//This ^ is used to get the status of a given batch
+
+We may not use all of these immediately, but we'll definitely be using 
+2-3 of them. This file should make it somewhat easier to create API calls
+
+I'll also list the parameters/headers for some of the APIs we'll likely call
+during this sprint. I'll add more as we progress
+
+Create a Batch for upload
+	POST ROOT_URI + IMPORT_URI
+	-H "Content-Type: application/json" \
+  	-H "x-gw-ims-org-id: {IMS_ORG}" \
+  	-H "x-sandbox-name: {SANDBOX_NAME}" \
+  	-H "Authorization: Bearer {ACCESS_TOKEN}" \
+  	-H "x-api-key : {API_KEY}"
+ 	 -d '{ 
+          "datasetId": "{DATASET_ID}" 
+      		}'
+
+Upload a batch that has been created (single batch file)
+	PUT ROOT_URI + IMPORT_URI +"{BATCH_ID}/datasets/{DATASET_ID}/files/{FILE_NAME}.parquet"
+	-H "content-type: application/octet-stream" \
+  	-H "x-gw-ims-org-id: {IMS_ORG}" \
+  	-H "x-sandbox-name: {SANDBOX_NAME}" \
+  	-H "Authorization: Bearer {ACCESS_TOKEN}" \
+  	-H "x-api-key : {API_KEY}" \
+  	--data-binary "@{FILE_PATH_AND_NAME}.parquet"
+
+Start the upload of a large file
+	POST ROOT_URI + IMPORT_URI +"{BATCH_ID}/datasets/{DATASET_ID}/files/{FILE_NAME}?action=initialize
+	 -H "x-gw-ims-org-id: {IMS_ORG}" \
+  	-H "x-sandbox-name: {SANDBOX_NAME}" \
+  	-H "Authorization: Bearer {ACCESS_TOKEN}" \
+  	-H "x-api-key: {API_KEY}"
+
+Continue the upload of a large file
+	POST ROOT_URI + IMPORT_URI+"{BATCH_ID}/datasets/{DATASET_ID}/files/{FILE_NAME}
+	-H "content-type: application/octet-stream" \
+  	-H "x-gw-ims-org-id: {IMS_ORG}" \
+  	-H "x-sandbox-name: {SANDBOX_NAME}" \
+  	-H "Authorization: Bearer {ACCESS_TOKEN}" \
+  	-H "x-api-key: {API_KEY}" \
+  	-H "Content-Range: bytes {CONTENT_RANGE}" \
+  	--data-binary "@{FILE_PATH_AND_NAME}.parquet"
+
+Signal completion of a batch
+	POST ROOT_URI+IMPORT_URI+"{BATCH_ID}?action=COMPLETE"
+	-H "x-gw-ims-org-id: {IMS_ORG}" \
+	-H "x-sandbox-name: {SANDBOX_NAME}" \
+	-H "Authorization: Bearer {ACCESS_TOKEN}" \
+	-H "x-api-key : {API_KEY}"
+
+check batch status
+	GET ROOT_URI+CHECK_STATUS_URI+{BATCH_ID}
+	-H "Authorization: Bearer {ACCESS_TOKEN}" \
+  	-H "x-gw-ims-org-id: {IMS_ORG}" \
+  	-H "x-sandbox-name: {SANDBOX_NAME}" \
+ 	-H "x-api-key: {API_KEY}"
+
+Get DataSets (with filtering)
+	GET ROOT_URI+DATASET_URI+"?limit=5&properties=name,description,files"
+	-H 'Authorization: Bearer {ACCESS_TOKEN}' \
+  	-H 'x-api-key: {API_KEY}' \
+  	-H 'x-gw-ims-org-id: {IMS_ORG}' \
+  	-H 'x-sandbox-name: {SANDBOX_NAME}'
+
+Get a specific Dataset object by ID
+	GET ROOT_URI+DATASET_URI+{id}+"?properties={properties you want to view}"
+	-H 'Authorization: Bearer {ACCESS_TOKEN}' \
+  	-H 'x-api-key: {API_KEY}' \
+  	-H 'x-gw-ims-org-id: {IMS_ORG}' \
+ 	-H 'x-sandbox-name: {SANDBOX_NAME}'

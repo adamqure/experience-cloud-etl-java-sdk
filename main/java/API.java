@@ -21,8 +21,6 @@ public class API {
 
     private API() {
     }
-
-
     /**
      * Insert API Calls here in the following format
      *
