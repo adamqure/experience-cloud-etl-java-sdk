@@ -12,12 +12,10 @@ public class Importer
     private CataloguerInterface dataCataloguer;
     private ValidatorInterface schemaValidator;
 
-    public Importer()
-    {
+    public Importer() {
         dataCataloguer = new Cataloguer();
         dataIngestor = new Ingestor();
         schemaValidator = new Validator();
     }
-
 
 }
