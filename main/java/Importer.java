@@ -12,6 +12,4 @@ public class Importer
         dataCataloguer = cataloguer;
         dataIngestor = ingestor;
     }
-
-
 }
