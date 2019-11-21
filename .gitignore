@@ -19,5 +19,12 @@
 *.tar.gz
 *.rar
 
+#Mac Inserted Files
+*.DS_Store
+
+#Config Files
+main/Config.xml
+*.xml
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*

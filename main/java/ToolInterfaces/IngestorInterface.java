@@ -1,8 +1,6 @@
-package java.ToolsInterfaces;
+package java.ToolInterfaces;
 
-import java.ParameterClasses.AuthTokenInterface;
-import java.ParameterClasses.DataSetIdInterface;
-import java.ParameterClasses.SchemaInterface;
+import java.ParameterInterfaces.*;
 import java.io.FileInputStream;
 
 /**This interface is used as a template for data ingestion on cloud platforms.
@@ -11,5 +9,5 @@ import java.io.FileInputStream;
 public interface IngestorInterface
 {
     public void Upload(FileInputStream toUpload, SchemaInterface schema,
-                       DataSetIdInterface dataSetId, AuthTokenInterface authToken);
+                       DataSetIdInterface dataSetId, AuthInfoInterface authInfo);
 }
