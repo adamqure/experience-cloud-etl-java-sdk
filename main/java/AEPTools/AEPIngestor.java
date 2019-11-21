@@ -1,8 +1,6 @@
 package java.AEPTools;
 
-import java.ParameterInterfaces.AuthTokenInterface;
-import java.ParameterInterfaces.DataSetIdInterface;
-import java.ParameterInterfaces.SchemaInterface;
+import java.ParameterInterfaces.*;
 import java.ToolInterfaces.IngestorInterface;
 import java.io.FileInputStream;
 
@@ -13,7 +11,8 @@ public class AEPIngestor implements IngestorInterface
 {
 
     @Override
-    public void Upload(FileInputStream toUpload, SchemaInterface schema, DataSetIdInterface dataSetId, AuthTokenInterface authToken) {
+    public void Upload(FileInputStream toUpload, SchemaInterface schema,
+                       DataSetIdInterface dataSetId, AuthInfoInterface authInfo) {
 
     }
 }
