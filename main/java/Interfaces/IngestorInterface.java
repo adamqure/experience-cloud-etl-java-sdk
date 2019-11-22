@@ -12,4 +12,8 @@ public interface IngestorInterface
 {
     public void Upload(FileInputStream toUpload, SchemaInterface schema,
                        DataSetIdInterface dataSetId, AuthTokenInterface authToken);
+    void createBatch();
+    void uploadFileToBatch();
+    void signalBatchComplete();
+    void cancelBatch();
 }
