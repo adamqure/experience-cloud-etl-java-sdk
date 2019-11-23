@@ -1,30 +1,39 @@
 package java.AEPParameters;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.ParameterInterfaces.AuthInfoInterface;
 import java.util.Calendar;
 import java.util.Date;
 
 public class AEPAuthInfo extends AuthInfoInterface
 {
-    private String client_secret;
-    private String jwt_token;
-    private String ims_org;
+    @SerializedName("client_secret")
+    @Expose
+    private String clientSecret;
+    @SerializedName("jwt_token")
+    @Expose
+    private String jwtToken;
+    @SerializedName("ims_org")
+    @Expose
+    private String imsOrgId;
 
     public AEPAuthInfo(String ims, String secret, String jwt)
     {
-        ims_org = ims;
-        client_secret = secret;
-        jwt_token = jwt;
+        imsOrgId = ims;
+        clientSecret = secret;
+        jwtToken = jwt;
     }
 
     public void addAuthToken(String token, String type, long timeToLive)
     {
-        this.access_token = token;
+        this.accessToken = token;
         this.expiration = Calendar.getInstance();
         /*This section is retrieving the Date for "now" from the Calendar, then
          * adding the time for which the token will be valid onto it, to get
          * the actual expiration date/time of the token*/
         long currentTime = this.expiration.getTime().getTime();
-        this.expiration.setTime(new Date(currentTime + (timeToLive * 1000)));
+        this.expiration.setTime(new Date(currentTime + (timeToLive)));
     }
 }
