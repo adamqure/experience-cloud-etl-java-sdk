@@ -9,5 +9,8 @@ import java.ParameterClasses.SchemaInterface;
  */
 public interface ValidatorInterface {
 
-    public void validateSchema(SchemaInterface schema, DataSetIdInterface dataSetId, AuthTokenInterface authToken);
+    void validateSchema(SchemaInterface schema, DataSetIdInterface dataSetId, AuthTokenInterface authToken);
+    void createSchema();
+    void lookupSchema();
+    void getTenantId();
 }

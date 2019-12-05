@@ -1,6 +1,7 @@
 package java;
 
 import java.Interfaces.*;
+import java.util.List;
 
 /**
  * Basic importer class that implements the ImporterInterface
@@ -12,12 +13,21 @@ public class Importer
     private CataloguerInterface dataCataloguer;
     private ValidatorInterface schemaValidator;
 
-    public Importer()
-    {
+    public Importer() {
         dataCataloguer = new Cataloguer();
         dataIngestor = new Ingestor();
         schemaValidator = new Validator();
     }
 
+    public void uploadWithoutSchema(List<String> classIds, List<String> mixinIds, String fileName) {
 
+    }
+
+    public void uploadWithoutDataset(String schemaId, String fileName) {
+
+    }
+
+    public void uploadFile(String datasetId, String fileName) {
+
+    }
 }
