@@ -1,6 +1,8 @@
-package java;
 
-import java.Interfaces.*;
+import ToolsInterfaces.*;
+import Tools.Cataloguer;
+import Tools.Ingestor;
+import Tools.Validator;
 import java.util.List;
 
 /**

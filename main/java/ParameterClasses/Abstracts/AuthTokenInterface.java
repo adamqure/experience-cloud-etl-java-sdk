@@ -1,4 +1,4 @@
-package java.ParameterClasses;
+package ParameterClasses.Abstracts;
 
 import java.util.Date;
 
