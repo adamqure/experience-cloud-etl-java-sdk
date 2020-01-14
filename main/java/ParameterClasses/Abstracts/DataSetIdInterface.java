@@ -1,4 +1,4 @@
-package java.ParameterClasses;
+package ParameterClasses.Abstracts;
 
 public abstract class DataSetIdInterface
 {

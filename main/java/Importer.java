@@ -1,7 +1,14 @@
-package java;
 
-import java.Interfaces.*;
+import ParameterClasses.Classes.AuthInfo;
+import ToolsInterfaces.*;
+import Tools.Cataloguer;
+import Tools.Ingestor;
+import Tools.Validator;
+import com.google.gson.Gson;
+
+import java.io.File;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Basic importer class that implements the ImporterInterface
@@ -14,6 +21,18 @@ public class Importer
     private ValidatorInterface schemaValidator;
 
     public Importer() {
+        Gson deserializer = new Gson();
+        File config = new File("./config.json");
+        AuthInfo authInfo = null;
+        try
+        {
+            String text = new Scanner(config).useDelimiter("\\A").next();
+            authInfo = deserializer.fromJson(text, AuthInfo.class);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         dataCataloguer = new Cataloguer();
         dataIngestor = new Ingestor();
         schemaValidator = new Validator();

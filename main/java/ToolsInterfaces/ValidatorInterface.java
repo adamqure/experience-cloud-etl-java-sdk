@@ -1,8 +1,8 @@
-package java.Interfaces;
+package ToolsInterfaces;
 
-import java.ParameterClasses.AuthTokenInterface;
-import java.ParameterClasses.DataSetIdInterface;
-import java.ParameterClasses.SchemaInterface;
+import ParameterClasses.Abstracts.AuthTokenInterface;
+import ParameterClasses.Abstracts.DataSetIdInterface;
+import ParameterClasses.Abstracts.SchemaInterface;
 
 /**
  * Interface to be used to create a Schema Validator

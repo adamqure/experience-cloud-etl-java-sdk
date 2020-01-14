@@ -1,8 +1,8 @@
-package java.Interfaces;
+package ToolsInterfaces;
 
-import java.ParameterClasses.AuthTokenInterface;
-import java.ParameterClasses.DataSetIdInterface;
-import java.ParameterClasses.SchemaInterface;
+import ParameterClasses.Abstracts.AuthTokenInterface;
+import ParameterClasses.Abstracts.DataSetIdInterface;
+import ParameterClasses.Abstracts.SchemaInterface;
 import java.io.FileInputStream;
 
 /**This interface is used as a template for data ingestion on cloud platforms.
