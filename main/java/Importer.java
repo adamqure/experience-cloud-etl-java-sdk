@@ -1,5 +1,8 @@
 
+import ParameterClasses.Abstracts.DataSetIdInterface;
+import ParameterClasses.Abstracts.SchemaInterface;
 import ParameterClasses.Classes.AuthInfo;
+import ParameterClasses.Classes.DataSetID;
 import ToolsInterfaces.*;
 import Tools.Cataloguer;
 import Tools.Ingestor;
@@ -7,6 +10,7 @@ import Tools.Validator;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,11 +23,12 @@ public class Importer
     private IngestorInterface dataIngestor;
     private CataloguerInterface dataCataloguer;
     private ValidatorInterface schemaValidator;
+    private AuthInfo authInfo;
 
     public Importer() {
         Gson deserializer = new Gson();
-        File config = new File("./config.json");
-        AuthInfo authInfo = null;
+        File config = new File("config.json");
+        authInfo = null;
         try
         {
             String text = new Scanner(config).useDelimiter("\\A").next();
@@ -38,15 +43,12 @@ public class Importer
         schemaValidator = new Validator();
     }
 
-    public void uploadWithoutSchema(List<String> classIds, List<String> mixinIds, String fileName) {
-
+    public void Upload(FileInputStream inputStream, SchemaInterface schema, DataSetIdInterface dsId)
+    {
+        dataIngestor.Upload(inputStream, schema, dsId, authInfo.getAccessToken());
     }
 
-    public void uploadWithoutDataset(String schemaId, String fileName) {
-
-    }
-
-    public void uploadFile(String datasetId, String fileName) {
+    private void generateJWT() {
 
     }
 }

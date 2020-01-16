@@ -35,4 +35,28 @@ public class AuthInfo extends AuthInfoInterface
         long currentTime = this.expiration.getTime().getTime();
         this.expiration.setTime(new Date(currentTime + (timeToLive)));
     }
+
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+    }
+
+    public String getJwtToken() {
+        return jwtToken;
+    }
+
+    public void setJwtToken(String jwtToken) {
+        this.jwtToken = jwtToken;
+    }
+
+    public String getImsOrgId() {
+        return imsOrgId;
+    }
+
+    public void setImsOrgId(String imsOrgId) {
+        this.imsOrgId = imsOrgId;
+    }
 }
