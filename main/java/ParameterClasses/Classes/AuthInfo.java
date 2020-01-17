@@ -13,7 +13,7 @@ public class AuthInfo extends AuthInfoInterface
     private String clientSecret;
     @SerializedName("jwt_token")
     @Expose
-    private String jwtToken;
+    private String jwt;
     @SerializedName("ims_org")
     @Expose
     private String imsOrgId;
@@ -22,7 +22,7 @@ public class AuthInfo extends AuthInfoInterface
     {
         imsOrgId = ims;
         clientSecret = secret;
-        jwtToken = jwt;
+        this.jwt = jwt;
     }
 
     public void addAuthToken(String token, String type, long timeToLive)
@@ -44,12 +44,12 @@ public class AuthInfo extends AuthInfoInterface
         this.clientSecret = clientSecret;
     }
 
-    public String getJwtToken() {
-        return jwtToken;
+    public String getJwt() {
+        return jwt;
     }
 
-    public void setJwtToken(String jwtToken) {
-        this.jwtToken = jwtToken;
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
     }
 
     public String getImsOrgId() {

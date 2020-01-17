@@ -1,4 +1,5 @@
 
+import ParameterClasses.Abstracts.AuthInfoInterface;
 import ParameterClasses.Abstracts.DataSetIdInterface;
 import ParameterClasses.Abstracts.SchemaInterface;
 import ParameterClasses.Classes.AuthInfo;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 import java.util.Scanner;
+import io.jsonwebtoken.*;
 
 /**
  * Basic importer class that implements the ImporterInterface
@@ -23,7 +25,7 @@ public class Importer
     private IngestorInterface dataIngestor;
     private CataloguerInterface dataCataloguer;
     private ValidatorInterface schemaValidator;
-    private AuthInfo authInfo;
+    private AuthInfoInterface authInfo;
 
     public Importer() {
         Gson deserializer = new Gson();
@@ -46,6 +48,10 @@ public class Importer
     public void Upload(FileInputStream inputStream, SchemaInterface schema, DataSetIdInterface dsId)
     {
         dataIngestor.Upload(inputStream, schema, dsId, authInfo.getAccessToken());
+    }
+
+    public void createJwt() {
+
     }
 
     private void generateJWT() {
