@@ -12,8 +12,9 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.jsonwebtoken.*;
 
 /**
@@ -25,7 +26,7 @@ public class Importer
     private IngestorInterface dataIngestor;
     private CataloguerInterface dataCataloguer;
     private ValidatorInterface schemaValidator;
-    private AuthInfoInterface authInfo;
+    private AuthInfo authInfo;
 
     public Importer() {
         Gson deserializer = new Gson();
@@ -40,6 +41,7 @@ public class Importer
         {
             e.printStackTrace();
         }
+        createJwt();
         dataCataloguer = new Cataloguer();
         dataIngestor = new Ingestor();
         schemaValidator = new Validator();
@@ -51,7 +53,18 @@ public class Importer
     }
 
     public void createJwt() {
-
+        Date exp = new Date();
+        exp.setTime(exp.getTime() + 600000);
+        Map<String, Object> metas = new HashMap<String, Object>();
+        metas.put("https://ims-na1.adobelogin.com/s/meta_scope", new Boolean(true));
+        String Jwt = Jwts.builder()
+                .setIssuer(authInfo.getImsOrgId())
+                .setExpiration(exp)
+                .setSubject(authInfo.getSubject())
+                .setAudience("https://ims-na1.adobelogin.com/c/" + authInfo.getApiKey())
+                .addClaims(metas)
+                .signWith(new Pri)
+        System.out.println(Jwt);
     }
 
     private void generateJWT() {

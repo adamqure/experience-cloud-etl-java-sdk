@@ -17,6 +17,9 @@ public class AuthInfo extends AuthInfoInterface
     @SerializedName("ims_org")
     @Expose
     private String imsOrgId;
+    @SerializedName("sub")
+    @Expose
+    private String subject;
 
     public AuthInfo(String ims, String secret, String jwt)
     {
@@ -58,5 +61,15 @@ public class AuthInfo extends AuthInfoInterface
 
     public void setImsOrgId(String imsOrgId) {
         this.imsOrgId = imsOrgId;
+    }
+
+    public String getSubject()
+    {
+        return subject;
+    }
+
+    public void setSubject(String subject)
+    {
+        this.subject = subject;
     }
 }

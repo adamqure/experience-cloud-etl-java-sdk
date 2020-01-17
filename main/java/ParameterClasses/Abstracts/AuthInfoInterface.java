@@ -2,6 +2,9 @@ package ParameterClasses.Abstracts;
 
 import com.google.gson.annotations.*;
 
+import java.math.BigInteger;
+import java.security.PrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.Calendar;
 
 public abstract class AuthInfoInterface
@@ -20,6 +23,7 @@ public abstract class AuthInfoInterface
     @SerializedName("access_token")
     @Expose
     protected String accessToken;
+    protected Calendar expiration;
 
     public String getUserName() {
         return userName;
@@ -77,5 +81,4 @@ public abstract class AuthInfoInterface
         this.rsaKey = rsaKey;
     }
 
-    protected Calendar expiration;
 }
