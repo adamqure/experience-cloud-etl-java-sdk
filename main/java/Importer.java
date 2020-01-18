@@ -12,9 +12,10 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.BigInteger;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.*;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.jsonwebtoken.*;
 
 /**
@@ -55,15 +56,17 @@ public class Importer
     public void createJwt() {
         Date exp = new Date();
         exp.setTime(exp.getTime() + 600000);
+        SignatureAlgorithm rs = SignatureAlgorithm.RS256;
         Map<String, Object> metas = new HashMap<String, Object>();
-        metas.put("https://ims-na1.adobelogin.com/s/meta_scope", new Boolean(true));
+        metas.put("https://ims-na1.adobelogin.com/s/meta_scope", Boolean.TRUE);
         String Jwt = Jwts.builder()
                 .setIssuer(authInfo.getImsOrgId())
                 .setExpiration(exp)
                 .setSubject(authInfo.getSubject())
                 .setAudience("https://ims-na1.adobelogin.com/c/" + authInfo.getApiKey())
                 .addClaims(metas)
-                .signWith(new Pri)
+                .signWith(authInfo.getRsaKey(), rs)
+                .compact();
         System.out.println(Jwt);
     }
 
