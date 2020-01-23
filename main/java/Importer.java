@@ -1,19 +1,22 @@
 
-import ParameterClasses.Abstracts.AuthInfoInterface;
+import Tools.Validator;
+import ToolsInterfaces.CataloguerInterface;
+import ToolsInterfaces.IngestorInterface;
+import ToolsInterfaces.ValidatorInterface;
+import com.google.gson.Gson;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import retrofit2.Call;
+import retrofit2.Response;
+
+import javax.security.auth.callback.Callback;
 import ParameterClasses.Abstracts.DataSetIdInterface;
 import ParameterClasses.Abstracts.SchemaInterface;
 import ParameterClasses.Classes.AuthInfo;
-import ParameterClasses.Classes.DataSetID;
-import ToolsInterfaces.*;
 import Tools.Cataloguer;
 import Tools.Ingestor;
-import Tools.Validator;
-import com.google.gson.Gson;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
@@ -21,12 +24,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.*;
-
-import com.google.gson.annotations.Expose;
-import io.jsonwebtoken.*;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Basic importer class that implements the ImporterInterface
@@ -37,6 +34,7 @@ public class Importer
     private IngestorInterface dataIngestor;
     private CataloguerInterface dataCataloguer;
     private ValidatorInterface schemaValidator;
+
     private AuthInfo authInfo;
 
     public Importer() {
@@ -53,9 +51,14 @@ public class Importer
             e.printStackTrace();
         }
         createJwt();
+
         dataCataloguer = new Cataloguer();
         dataIngestor = new Ingestor();
         schemaValidator = new Validator();
+    }
+
+    public AuthInfo getAuthInfo() {
+        return authInfo;
     }
 
     public void Upload(FileInputStream inputStream, SchemaInterface schema, DataSetIdInterface dsId)
@@ -123,17 +126,17 @@ public class Importer
         headers.put("client_secret", authInfo.getClientSecret());
         headers.put("jwt_token", authInfo.getJwt());
         Call<Void> call = API.getAuthService().getAuthToken(headers, authInfo);
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-
-            }
-        });
+//        call.enqueue(new Callback<Void>() {
+//            @Override
+//            public void onResponse(Call<Void> call, Response<Void> response) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Void> call, Throwable t) {
+//
+//            }
+//        });
         return authToken;
     }
 }
