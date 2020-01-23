@@ -13,16 +13,19 @@ public class AuthInfo extends AuthInfoInterface
     private String clientSecret;
     @SerializedName("jwt_token")
     @Expose
-    private String jwtToken;
+    private String jwt;
     @SerializedName("ims_org")
     @Expose
     private String imsOrgId;
+    @SerializedName("sub")
+    @Expose
+    private String subject;
 
     public AuthInfo(String ims, String secret, String jwt)
     {
         imsOrgId = ims;
         clientSecret = secret;
-        jwtToken = jwt;
+        this.jwt = jwt;
     }
 
     public void addAuthToken(String token, String type, long timeToLive)
@@ -34,5 +37,39 @@ public class AuthInfo extends AuthInfoInterface
          * the actual expiration date/time of the token*/
         long currentTime = this.expiration.getTime().getTime();
         this.expiration.setTime(new Date(currentTime + (timeToLive)));
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+    }
+
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
+
+    public String getImsOrgId() {
+        return imsOrgId;
+    }
+
+    public void setImsOrgId(String imsOrgId) {
+        this.imsOrgId = imsOrgId;
+    }
+
+    public String getSubject()
+    {
+        return subject;
+    }
+
+    public void setSubject(String subject)
+    {
+        this.subject = subject;
     }
 }

@@ -1,5 +1,9 @@
 
+import ParameterClasses.Abstracts.AuthInfoInterface;
+import ParameterClasses.Abstracts.DataSetIdInterface;
+import ParameterClasses.Abstracts.SchemaInterface;
 import ParameterClasses.Classes.AuthInfo;
+import ParameterClasses.Classes.DataSetID;
 import ToolsInterfaces.*;
 import Tools.Cataloguer;
 import Tools.Ingestor;
@@ -7,8 +11,22 @@ import Tools.Validator;
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.util.List;
-import java.util.Scanner;
+import java.io.FileInputStream;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.*;
+
+import com.google.gson.annotations.Expose;
+import io.jsonwebtoken.*;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Basic importer class that implements the ImporterInterface
@@ -19,11 +37,12 @@ public class Importer
     private IngestorInterface dataIngestor;
     private CataloguerInterface dataCataloguer;
     private ValidatorInterface schemaValidator;
+    private AuthInfo authInfo;
 
     public Importer() {
         Gson deserializer = new Gson();
-        File config = new File("./config.json");
-        AuthInfo authInfo = null;
+        File config = new File("config.json");
+        authInfo = null;
         try
         {
             String text = new Scanner(config).useDelimiter("\\A").next();
@@ -33,20 +52,88 @@ public class Importer
         {
             e.printStackTrace();
         }
+        createJwt();
         dataCataloguer = new Cataloguer();
         dataIngestor = new Ingestor();
         schemaValidator = new Validator();
     }
 
-    public void uploadWithoutSchema(List<String> classIds, List<String> mixinIds, String fileName) {
-
+    public void Upload(FileInputStream inputStream, SchemaInterface schema, DataSetIdInterface dsId)
+    {
+        dataIngestor.Upload(inputStream, schema, dsId, authInfo.getAccessToken());
     }
 
-    public void uploadWithoutDataset(String schemaId, String fileName) {
-
+    public void createJwt()
+    {
+        //Set a time for the JWT to expire, 10 minutes from the current time
+        Date exp = new Date();
+        exp.setTime(exp.getTime() + 600000);
+        byte[] bytes;
+        RSAPrivateKey privKey = null;
+        try
+        {
+            String keyString = authInfo.getRsaKey();
+            keyString = keyString.replace("\\s+", "");
+            keyString = keyString.replace("\n", "");
+            keyString = keyString.replace("-----BEGIN PRIVATE KEY-----", "");
+            keyString = keyString.replace("-----END PRIVATE KEY-----", "");
+            System.out.println(keyString);
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+            bytes = Base64.getDecoder().decode(keyString);
+            KeySpec keySpec = new PKCS8EncodedKeySpec(bytes);
+            privKey = (RSAPrivateKey) factory.generatePrivate(keySpec);
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+            System.out.println("Some error occured when attempting to get the Key factory for the RSAPrivateKey");
+        }
+        catch (InvalidKeySpecException e)
+        {
+            e.printStackTrace();
+            System.out.println("Invalid Key spec when attempting to create a JWT with your RSA private key. Please check your" +
+                    "config file and RSA key");
+        }
+        if (privKey == null)
+        {
+            //TODO Set proper error handling in the case that we get to here without a proper Key
+            System.out.println("Something went wrong in the creation of the JSON Web Token (JWT) Most likely problem is" +
+                    "a config file not formatted correctly or an incorrect RSA key formatting");
+        }
+        SignatureAlgorithm rs = SignatureAlgorithm.RS256;
+        Map<String, Object> metas = new HashMap<String, Object>();
+        metas.put("https://ims-na1.adobelogin.com/s/meta_scope", Boolean.TRUE);
+        String Jwt = Jwts.builder()
+                .setIssuer(authInfo.getImsOrgId())
+                .setExpiration(exp)
+                .setSubject(authInfo.getSubject())
+                .setAudience("https://ims-na1.adobelogin.com/c/" + authInfo.getApiKey())
+                .addClaims(metas)
+                .signWith(privKey, rs)
+                .compact();
+        System.out.println(Jwt);
+        authInfo.setJwt(Jwt);
     }
 
-    public void uploadFile(String datasetId, String fileName) {
+    public String exchangeJwtAuth()
+    {
+        String authToken = "";
+        Map<String, String> headers = new HashMap<>();
+        headers.put("client_id", authInfo.getApiKey());
+        headers.put("client_secret", authInfo.getClientSecret());
+        headers.put("jwt_token", authInfo.getJwt());
+        Call<Void> call = API.getAuthService().getAuthToken(headers, authInfo);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                
+            }
 
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+        return authToken;
     }
 }

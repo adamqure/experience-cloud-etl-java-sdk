@@ -8,6 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.*;
 
 import ParameterClasses.Abstracts.AuthInfoInterface;
+
+import java.io.FileInputStream;
 import java.util.Map;
 
 
@@ -71,7 +73,7 @@ public abstract class API {
     interface IngestionService {
         //Create a Batch
 //        curl -X POST "https://platform.adobe.io/data/foundation/import/batches" \
-//  -H "Accept: application/json" \
+//                -H "Accept: application/json" \
 //                -H "x-gw-ims-org-id: {IMS_ORG}" \
 //                -H "x-sandbox-name: {SANDBOX_NAME}" \
 //                -H "Authorization: Bearer {ACCESS_TOKEN}" \
@@ -97,12 +99,13 @@ public abstract class API {
 
 
         //TODO: The body is an octet stream in an object
+        @Multipart
         @PUT("batches/{BATCH_ID}/datasets/{DATASET_ID}/files/{FILE_NAME}")
         Call<Void> uploadFileToBatch(@HeaderMap Map<String, String> headers,
                                      @Query("BATCH_ID") String batchId,
                                      @Query("DATASET_ID") String datasetId,
                                      @Query("FILE_NAME") String fileName,
-                                     @Body String body);
+                                     @Body FileInputStream body);
 
         //Signal Batch Complete
 //        curl -X POST "https://platform.adobe.io/data/foundation/import/batches/5d01230fc78a4e4f8c0c6b387b4b8d1c?action=COMPLETE" \

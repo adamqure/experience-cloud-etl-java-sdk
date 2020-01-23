@@ -1,6 +1,5 @@
 package Tools;
 
-import ParameterClasses.Abstracts.AuthTokenInterface;
 import ParameterClasses.Abstracts.DataSetIdInterface;
 import ParameterClasses.Abstracts.SchemaInterface;
 import ToolsInterfaces.IngestorInterface;
@@ -12,7 +11,7 @@ import java.io.FileInputStream;
 public class Ingestor implements IngestorInterface
 {
     @Override
-    public void Upload(FileInputStream toUpload, SchemaInterface schema, DataSetIdInterface dataSetId, AuthTokenInterface authToken) {
+    public void Upload(FileInputStream toUpload, SchemaInterface schema, DataSetIdInterface dataSetId, String authToken) {
 
     }
 

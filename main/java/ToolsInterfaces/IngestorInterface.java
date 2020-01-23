@@ -1,6 +1,5 @@
 package ToolsInterfaces;
 
-import ParameterClasses.Abstracts.AuthTokenInterface;
 import ParameterClasses.Abstracts.DataSetIdInterface;
 import ParameterClasses.Abstracts.SchemaInterface;
 import java.io.FileInputStream;
@@ -11,7 +10,7 @@ import java.io.FileInputStream;
 public interface IngestorInterface
 {
     public void Upload(FileInputStream toUpload, SchemaInterface schema,
-                       DataSetIdInterface dataSetId, AuthTokenInterface authToken);
+                       DataSetIdInterface dataSetId, String authToken);
     void createBatch();
     void uploadFileToBatch();
     void signalBatchComplete();
