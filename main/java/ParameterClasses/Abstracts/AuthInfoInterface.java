@@ -1,5 +1,6 @@
 package ParameterClasses.Abstracts;
 
+import ParameterClasses.Classes.AuthToken;
 import com.google.gson.annotations.*;
 
 
@@ -24,8 +25,7 @@ public abstract class AuthInfoInterface
     protected String tokenType;
     @SerializedName("access_token")
     @Expose
-    protected String accessToken;
-    protected Calendar expiration;
+    protected AuthToken accessToken;
 
     public String getUserName() {
         return userName;
@@ -60,19 +60,19 @@ public abstract class AuthInfoInterface
     }
 
     public String getAccessToken() {
-        return accessToken;
+        return accessToken.getToken();
     }
 
-    public void setAccessToken(String accessToken) {
+    public void setAccessToken(AuthToken accessToken) {
         this.accessToken = accessToken;
     }
 
-    public Calendar getExpiration() {
-        return expiration;
+    public String getExpiration() {
+        return this.accessToken.getExpiration();
     }
 
-    public void setExpiration(Calendar expiration) {
-        this.expiration = expiration;
+    public void setExpiration(String expiration) {
+        this.accessToken.setExpiration(expiration);
     }
 
     public String getRsaKey() {

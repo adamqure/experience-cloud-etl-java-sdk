@@ -28,15 +28,9 @@ public class AuthInfo extends AuthInfoInterface
         this.jwt = jwt;
     }
 
-    public void addAuthToken(String token, String type, long timeToLive)
+    public void addAuthToken(AuthToken token)
     {
         this.accessToken = token;
-        this.expiration = Calendar.getInstance();
-        /*This section is retrieving the Date for "now" from the Calendar, then
-         * adding the time for which the token will be valid onto it, to get
-         * the actual expiration date/time of the token*/
-        long currentTime = this.expiration.getTime().getTime();
-        this.expiration.setTime(new Date(currentTime + (timeToLive)));
     }
 
     public String getClientSecret() {
