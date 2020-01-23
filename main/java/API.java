@@ -1,4 +1,5 @@
 
+import ParameterClasses.Classes.AuthToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import okhttp3.OkHttpClient;
@@ -181,8 +182,9 @@ public abstract class API {
 
     interface AuthService {
         //Exchange JWT for Auth Token
+        @FormUrlEncoded
         @POST("exchange/jwt/")
-        Call<Void> getAuthToken(@HeaderMap Map<String, String> headers, @Body AuthInfoInterface body);
+        Call<AuthToken> getAuthToken(@Field("client_id") String id, @Field("client_secret") String secret, @Field("jwt_token") String jwt);
     }
 
     public static SchemaService getSchemaService() {
