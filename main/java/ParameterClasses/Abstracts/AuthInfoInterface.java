@@ -1,7 +1,6 @@
 package ParameterClasses.Abstracts;
 
 import com.google.gson.annotations.*;
-import sun.security.rsa.RSAPrivateKeyImpl;
 
 
 import java.math.BigInteger;
@@ -80,16 +79,16 @@ public abstract class AuthInfoInterface
         return rsaKey;
     }
 
-    public Key convertKey() {
-        byte[] bytes = this.rsaKey.getBytes();
-        BigInteger exponent = new BigInteger(bytes);
-        try {
-
-        }
-        catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
-    }
+//    public Key convertKey() {
+//        byte[] bytes = this.rsaKey.getBytes();
+//        BigInteger exponent = new BigInteger(bytes);
+//        try {
+//
+//        }
+//        catch (InvalidKeyException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void setRsaKey(String rsaKey) {
         this.rsaKey = rsaKey;
