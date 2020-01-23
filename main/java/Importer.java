@@ -13,6 +13,9 @@ import javax.security.auth.callback.Callback;
 import ParameterClasses.Abstracts.DataSetIdInterface;
 import ParameterClasses.Abstracts.SchemaInterface;
 import ParameterClasses.Classes.AuthInfo;
+import ParameterClasses.Classes.AuthToken;
+import ParameterClasses.Classes.DataSetID;
+import ToolsInterfaces.*;
 import Tools.Cataloguer;
 import Tools.Ingestor;
 import java.io.File;
@@ -105,7 +108,7 @@ public class Importer
         }
         SignatureAlgorithm rs = SignatureAlgorithm.RS256;
         Map<String, Object> metas = new HashMap<String, Object>();
-        metas.put("https://ims-na1.adobelogin.com/s/meta_scope", Boolean.TRUE);
+        metas.put("https://ims-na1.adobelogin.com/s/ent_dataservices_sdk", Boolean.TRUE);
         String Jwt = Jwts.builder()
                 .setIssuer(authInfo.getImsOrgId())
                 .setExpiration(exp)
@@ -115,28 +118,28 @@ public class Importer
                 .signWith(privKey, rs)
                 .compact();
         System.out.println(Jwt);
+        byte[] holder = Jwt.getBytes(StandardCharsets.ISO_8859_1);
+        Jwt = new String(holder, StandardCharsets.UTF_8);
         authInfo.setJwt(Jwt);
+        this.exchangeJwtAuth();
     }
 
-    public String exchangeJwtAuth()
+    public void exchangeJwtAuth()
     {
-        String authToken = "";
-        Map<String, String> headers = new HashMap<>();
-        headers.put("client_id", authInfo.getApiKey());
-        headers.put("client_secret", authInfo.getClientSecret());
-        headers.put("jwt_token", authInfo.getJwt());
-        Call<Void> call = API.getAuthService().getAuthToken(headers, authInfo);
-//        call.enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//
-//            }
-//        });
-        return authToken;
+        Call<AuthToken> call = API.getAuthService().getAuthToken(authInfo.getApiKey(), authInfo.getClientSecret(), authInfo.getJwt());
+        call.enqueue(new Callback<AuthToken>(){
+            @Override
+            public void onResponse(Call<AuthToken> call, Response<AuthToken> response) {
+                if(response != null) {
+                    authInfo.addAuthToken(response.body());
+                    System.out.println(authInfo.getAccessToken());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthToken> call, Throwable t) {
+                System.out.println("Error when exchanging JWT for Access Token");
+            }
+        });
     }
 }
