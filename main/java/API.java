@@ -1,4 +1,5 @@
 
+import Models.CreateBatchBody;
 import ParameterClasses.Classes.AuthToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -87,7 +88,7 @@ public abstract class API {
 //                      }'
 
         @POST("batches")
-        Call<String> createBatch(@HeaderMap Map<String, String> headers, @Body String body);
+        Call<CreateBatchBody> createBatch(@HeaderMap Map<String, String> headers, @Body CreateBatchBody body);
 
 
         //Upload Files to Batch

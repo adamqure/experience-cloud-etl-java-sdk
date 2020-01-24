@@ -1,4 +1,5 @@
 
+import Models.CreateBatchBody;
 import ParameterClasses.Abstracts.DataSetIdInterface;
 import ParameterClasses.Abstracts.SchemaInterface;
 import ParameterClasses.Classes.AuthInfo;
@@ -150,33 +151,34 @@ public class Importer
         headers.put("x-gw-ims-org-id", authInfo.getImsOrgId());
         headers.put("Authorization", "Bearer " + authInfo.getAccessToken());
         headers.put("x-api-key", authInfo.getApiKey());
-        DataBody createBatchData = new DataBody(DSId.getIdentifier());
-        String serialized = deserializer.toJson(createBatchData);
-        System.out.println(serialized);
-        Call<String> call = API.getIngestionService().createBatch(headers, serialized);
-        call.enqueue(new Callback<String>() {
+
+        CreateBatchBody createBatchData = new CreateBatchBody(DSId.getIdentifier());
+        System.out.println("Create Batch Body:\n" + createBatchData.toString());
+//        String serialized = deserializer.toJson(createBatchData);
+//        System.out.println(serialized);
+
+        Call<CreateBatchBody> call = API.getIngestionService().createBatch(headers, createBatchData);
+        call.enqueue(new Callback<CreateBatchBody>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                System.out.println("Success" + response.body());
+            public void onResponse(Call<CreateBatchBody> call, Response<CreateBatchBody> response) {
+                System.out.println("Success\n" + response.body());
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-
+            public void onFailure(Call<CreateBatchBody> call, Throwable t) {
+                System.out.println("Failure. Call:\n" + call.toString() + ",\nThrowable:\n" + t.toString());
             }
         });
-    }
 
-    private class DataBody
-    {
-        private String datasetId;
-        private Map<String, Object> inputFormat;
-        DataBody(String id)
-        {
-            inputFormat = new HashMap<>();
-            datasetId = id;
-            inputFormat.put("format", "json");
-            inputFormat.put("isMultilineJson", true);
-        }
+//        @Override
+//        public void onResponse(Call<String> call, Response<String> response) {
+//        System.out.println("Success" + response.body());
+//    }
+//
+//        @Override
+//        public void onFailure(Call<String> call, Throwable t) {
+//
+//    }
+
     }
 }
