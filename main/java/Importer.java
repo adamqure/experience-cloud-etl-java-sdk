@@ -1,5 +1,4 @@
 
-import ParameterClasses.Abstracts.AuthInfoInterface;
 import ParameterClasses.Abstracts.DataSetIdInterface;
 import ParameterClasses.Abstracts.SchemaInterface;
 import ParameterClasses.Classes.AuthInfo;
@@ -13,7 +12,6 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -23,11 +21,11 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.*;
 
-import com.google.gson.annotations.Expose;
 import io.jsonwebtoken.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 /**
  * Basic importer class that implements the ImporterInterface
@@ -39,15 +37,18 @@ public class Importer
     private CataloguerInterface dataCataloguer;
     private ValidatorInterface schemaValidator;
     private AuthInfo authInfo;
+    private Gson deserializer;
 
-    public Importer() {
-        Gson deserializer = new Gson();
+    public Importer()
+    {
+        deserializer = new Gson();
         File config = new File("config.json");
         authInfo = null;
         try
         {
             String text = new Scanner(config).useDelimiter("\\A").next();
             authInfo = deserializer.fromJson(text, AuthInfo.class);
+            authInfo.addAuthToken(new AuthToken());
         }
         catch (Exception e)
         {
@@ -57,11 +58,6 @@ public class Importer
         dataCataloguer = new Cataloguer();
         dataIngestor = new Ingestor();
         schemaValidator = new Validator();
-    }
-
-    public void Upload(FileInputStream inputStream, SchemaInterface schema, DataSetIdInterface dsId)
-    {
-        dataIngestor.Upload(inputStream, schema, dsId, authInfo.getAccessToken());
     }
 
     public void createJwt()
@@ -78,7 +74,7 @@ public class Importer
             keyString = keyString.replace("\n", "");
             keyString = keyString.replace("-----BEGIN PRIVATE KEY-----", "");
             keyString = keyString.replace("-----END PRIVATE KEY-----", "");
-            System.out.println(keyString);
+//            System.out.println(keyString);
             KeyFactory factory = KeyFactory.getInstance("RSA");
             bytes = Base64.getDecoder().decode(keyString);
             KeySpec keySpec = new PKCS8EncodedKeySpec(bytes);
@@ -112,11 +108,12 @@ public class Importer
                 .addClaims(metas)
                 .signWith(privKey, rs)
                 .compact();
-        System.out.println(Jwt);
+//        System.out.println(Jwt);
         byte[] holder = Jwt.getBytes(StandardCharsets.ISO_8859_1);
         Jwt = new String(holder, StandardCharsets.UTF_8);
         authInfo.setJwt(Jwt);
         this.exchangeJwtAuth();
+        this.Upload(null, null, new DataSetID("5e29e7e984479018a93e70a7"));
     }
 
     public void exchangeJwtAuth()
@@ -124,6 +121,7 @@ public class Importer
         Call<AuthToken> call = API.getAuthService().getAuthToken(authInfo.getApiKey(), authInfo.getClientSecret(), authInfo.getJwt());
         call.enqueue(new Callback<AuthToken>(){
             @Override
+            //TODO Complete error checking
             public void onResponse(Call<AuthToken> call, Response<AuthToken> response) {
                 if(response != null) {
                     authInfo.addAuthToken(response.body());
@@ -136,5 +134,49 @@ public class Importer
                 System.out.println("Error when exchanging JWT for Access Token");
             }
         });
+    }
+
+    public void Upload(FileInputStream toUpload, SchemaInterface schema, DataSetIdInterface DSId)
+    {
+        while (authInfo.getAccessToken() == "")
+        {
+            try
+            { Thread.sleep(1000); }
+            catch (InterruptedException e)
+            { Thread.currentThread().interrupt(); }
+        }
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("x-gw-ims-org-id", authInfo.getImsOrgId());
+        headers.put("Authorization", "Bearer " + authInfo.getAccessToken());
+        headers.put("x-api-key", authInfo.getApiKey());
+        DataBody createBatchData = new DataBody(DSId.getIdentifier());
+        String serialized = deserializer.toJson(createBatchData);
+        System.out.println(serialized);
+        Call<String> call = API.getIngestionService().createBatch(headers, serialized);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                System.out.println("Success" + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private class DataBody
+    {
+        private String datasetId;
+        private Map<String, Object> inputFormat;
+        DataBody(String id)
+        {
+            inputFormat = new HashMap<>();
+            datasetId = id;
+            inputFormat.put("format", "json");
+            inputFormat.put("isMultilineJson", true);
+        }
     }
 }

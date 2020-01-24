@@ -74,7 +74,7 @@ public abstract class API {
     interface IngestionService {
         //Create a Batch
 //        curl -X POST "https://platform.adobe.io/data/foundation/import/batches" \
-//                -H "Accept: application/json" \
+//                -H "Content-Type: application/json" \
 //                -H "x-gw-ims-org-id: {IMS_ORG}" \
 //                -H "x-sandbox-name: {SANDBOX_NAME}" \
 //                -H "Authorization: Bearer {ACCESS_TOKEN}" \
@@ -82,12 +82,12 @@ public abstract class API {
 //                -d '{
 //                "datasetId": "{DATASET_ID}",
 //                "inputFormat": {
-//            "format": "json"
-//        }
-//    }'
+//                      "format": "json"
+//                                }
+//                      }'
 
         @POST("batches")
-        Call<Void> createBatch(@HeaderMap Map<String, String> headers, @Body String body);
+        Call<String> createBatch(@HeaderMap Map<String, String> headers, @Body String body);
 
 
         //Upload Files to Batch
