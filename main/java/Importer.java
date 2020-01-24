@@ -157,15 +157,15 @@ public class Importer
 //        String serialized = deserializer.toJson(createBatchData);
 //        System.out.println(serialized);
 
-        Call<CreateBatchBody> call = API.getIngestionService().createBatch(headers, createBatchData);
-        call.enqueue(new Callback<CreateBatchBody>() {
+        Call<Void> call = API.getIngestionService().createBatch(headers, createBatchData);
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<CreateBatchBody> call, Response<CreateBatchBody> response) {
-                System.out.println("Success\n" + response.body());
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                System.out.println("Success\n" + response.toString());
             }
 
             @Override
-            public void onFailure(Call<CreateBatchBody> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 System.out.println("Failure. Call:\n" + call.toString() + ",\nThrowable:\n" + t.toString());
             }
         });

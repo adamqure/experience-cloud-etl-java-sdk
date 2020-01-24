@@ -88,7 +88,7 @@ public abstract class API {
 //                      }'
 
         @POST("batches")
-        Call<CreateBatchBody> createBatch(@HeaderMap Map<String, String> headers, @Body CreateBatchBody body);
+        Call<Void> createBatch(@HeaderMap Map<String, String> headers, @Body CreateBatchBody body);
 
 
         //Upload Files to Batch
