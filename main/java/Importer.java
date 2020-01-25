@@ -27,7 +27,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 /**
  * Basic importer class that implements the ImporterInterface
  * Importer uses an ingestor, validator, and cataloguer
