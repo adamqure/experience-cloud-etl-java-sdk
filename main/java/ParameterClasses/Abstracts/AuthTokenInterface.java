@@ -14,6 +14,12 @@ public abstract class AuthTokenInterface
     @Expose
     private String expiration;
 
+    public AuthTokenInterface()
+    {
+        token = "";
+        expiration = "";
+    }
+
     public String getToken() {
         return token;
     }
