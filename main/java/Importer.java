@@ -8,11 +8,9 @@ import ParameterClasses.Classes.DataSetID;
 import ToolsInterfaces.*;
 import Tools.Cataloguer;
 import Tools.Ingestor;
-import Tools.Validator;
-import com.google.gson.Gson;
-
 import java.io.File;
 import java.io.FileInputStream;
+
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -26,7 +24,6 @@ import io.jsonwebtoken.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 /**
  * Basic importer class that implements the ImporterInterface
  * Importer uses an ingestor, validator, and cataloguer
@@ -36,6 +33,7 @@ public class Importer
     private IngestorInterface dataIngestor;
     private CataloguerInterface dataCataloguer;
     private ValidatorInterface schemaValidator;
+
     private AuthInfo authInfo;
     private Gson deserializer;
 
@@ -55,11 +53,21 @@ public class Importer
             e.printStackTrace();
         }
         createJwt();
+
         dataCataloguer = new Cataloguer();
         dataIngestor = new Ingestor();
         schemaValidator = new Validator();
     }
 
+    public AuthInfo getAuthInfo() {
+        return authInfo;
+    }
+
+    public void Upload(FileInputStream inputStream, SchemaInterface schema, DataSetIdInterface dsId)
+    {
+        dataIngestor.Upload(inputStream, schema, dsId, authInfo.getAccessToken());
+    }
+  
     public void createJwt()
     {
         //Set a time for the JWT to expire, 10 minutes from the current time
