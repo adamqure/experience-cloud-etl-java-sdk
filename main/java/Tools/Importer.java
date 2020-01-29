@@ -21,7 +21,6 @@ import io.jsonwebtoken.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 /**
  * Basic importer class that implements the ImporterInterface
  * Tools.Importer uses an ingestor, validator, and cataloguer
@@ -30,6 +29,7 @@ public class Importer implements ImporterInterface {
     private IngestorInterface ingestor;
     private CataloguerInterface cataloguer;
     private ValidatorInterface schemaValidator;
+
     private AuthInfo authInfo;
 
     public Importer() {
