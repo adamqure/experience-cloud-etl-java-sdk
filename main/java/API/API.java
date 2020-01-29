@@ -1,22 +1,22 @@
+package API;
 
 import Models.CreateBatchBody;
-import ParameterClasses.Classes.AuthToken;
+import ParameterClasses.AuthToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.*;
 
-import ParameterClasses.Abstracts.AuthInfoInterface;
-
-import java.io.FileInputStream;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 /**
- * Abstract API class to be used with the API calls
+ * Abstract API.API class to be used with the API.API calls
  */
 public abstract class API {
 
@@ -26,7 +26,7 @@ public abstract class API {
     static final String SCHEMA_REGISTRY_URL = "https://platform.adobe.io/data/foundation/schemaregistry/";
     static final String CATALOG_URL = "https://platform.adobe.io/data/foundation/catalog/";
 
-    interface SchemaService {
+    public interface SchemaService {
 //        Create a Schema
 //    POST /tenant/schemas
 //    curl -X POST \
@@ -72,7 +72,7 @@ public abstract class API {
         Call<Void> lookupTenantID(@HeaderMap Map<String, String> headers);
     }
 
-    interface IngestionService {
+    public interface IngestionService {
         //Create a Batch
 //        curl -X POST "https://platform.adobe.io/data/foundation/import/batches" \
 //                -H "Content-Type: application/json" \
@@ -88,10 +88,10 @@ public abstract class API {
 //                      }'
 
         @POST("batches")
-        Call<Void> createBatch(@HeaderMap Map<String, String> headers, @Body CreateBatchBody body);
+        Call<JsonElement> createBatch(@HeaderMap Map<String, String> headers, @Body CreateBatchBody body);
 
 
-        //Upload Files to Batch
+        //upload Files to Batch
 //        curl -X PUT 'https://platform.adobe.io/data/foundation/import/batches/5d01230fc78a4e4f8c0c6b387b4b8d1c/datasets/5c8c3c555033b814b69f947f/files/loyaltyData.parquet' \
 //                -H 'content-type: application/octet-stream' \
 //                -H 'x-api-key : {API_KEY}' \
@@ -101,13 +101,12 @@ public abstract class API {
 
 
         //TODO: The body is an octet stream in an object
-        @Multipart
         @PUT("batches/{BATCH_ID}/datasets/{DATASET_ID}/files/{FILE_NAME}")
         Call<Void> uploadFileToBatch(@HeaderMap Map<String, String> headers,
-                                     @Query("BATCH_ID") String batchId,
-                                     @Query("DATASET_ID") String datasetId,
-                                     @Query("FILE_NAME") String fileName,
-                                     @Body FileInputStream body);
+                                     @Path("BATCH_ID") String batchId,
+                                     @Path("DATASET_ID") String datasetId,
+                                     @Path("FILE_NAME") String fileName,
+                                     @Body byte[] body);
 
         //Signal Batch Complete
 //        curl -X POST "https://platform.adobe.io/data/foundation/import/batches/5d01230fc78a4e4f8c0c6b387b4b8d1c?action=COMPLETE" \
@@ -116,7 +115,7 @@ public abstract class API {
 //                -H 'Authorization: Bearer {ACCESS_TOKEN}'
         @POST("batches/{BATCH_ID}?action=COMPLETE")
         Call<Void> signalBatchComplete(@HeaderMap Map<String, String> headers,
-                                       @Query("BATCH_ID") String batchId);
+                                       @Path("BATCH_ID") String batchId);
 
         //Cancel a Batch
 //        curl -X POST "https://platform.adobe.io/data/foundation/import/batches/{BATCH_ID}?action=ABORT" \
@@ -126,9 +125,13 @@ public abstract class API {
 //                -H "x-api-key : {API_KEY}"
         @POST("batches/{BATCH_ID}?action=ABORT")
         Call<Void> cancelBatch(@HeaderMap Map<String, String> headers, @Query("BATCH_ID") String batchId);
+
+        @GET("batches/{BATCH_ID}")
+        Call<JsonElement> getUploadStatus(@HeaderMap Map<String, String> headers,
+                                          @Path("BATCH_ID") String batchId);
     }
 
-    interface CatalogService {
+    public interface CatalogService {
         //Create a Dataset
 //        curl -X POST \
 //                'https://platform.adobe.io/data/foundation/catalog/dataSets?requestDataSource=true' \
@@ -160,9 +163,9 @@ public abstract class API {
 //                -H 'x-gw-ims-org-id: {IMG_ORG}' \
 //                -H 'x-sandbox-name: {SANDBOX_NAME}' \
 //                -H 'Authorization: Bearer {ACCESS_TOKEN}'
-        @GET("batches?batch={BATCH_ID}")
-        Call<Void> getUploadStatus(@HeaderMap Map<String, String> headers,
-                                   @Query("BATCH_ID") String batchId);
+        @GET("batches/{BATCH_ID}")
+        Call<JsonElement> getUploadStatus(@HeaderMap Map<String, String> headers,
+                                   @Path("BATCH_ID") String batchId);
 
         //Get All Batches
 //        curl -X GET 'https://platform.adobe.io/data/foundation/catalog/batches/' \
@@ -181,7 +184,7 @@ public abstract class API {
 
     }
 
-    interface AuthService {
+    public interface AuthService {
         //Exchange JWT for Auth Token
         @FormUrlEncoded
         @POST("exchange/jwt/")
@@ -193,10 +196,15 @@ public abstract class API {
                 .setLenient()
                 .create();
 
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(SCHEMA_REGISTRY_URL)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create()) //assuming JSON
                 .build();
         return retrofit.create(SchemaService.class);
@@ -207,10 +215,15 @@ public abstract class API {
                 .setLenient()
                 .create();
 
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BATCH_INGESTION_URL)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create()) //assuming JSON
                 .build();
         return retrofit.create(IngestionService.class);
@@ -221,10 +234,15 @@ public abstract class API {
                 .setLenient()
                 .create();
 
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(CATALOG_URL)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create()) //assuming JSON
                 .build();
         return retrofit.create(CatalogService.class);

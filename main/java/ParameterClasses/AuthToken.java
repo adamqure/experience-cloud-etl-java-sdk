@@ -1,11 +1,9 @@
-package ParameterClasses.Abstracts;
+package ParameterClasses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
-
-public abstract class AuthTokenInterface
+public class AuthToken
 {
     @SerializedName("access_token")
     @Expose
@@ -14,7 +12,7 @@ public abstract class AuthTokenInterface
     @Expose
     private String expiration;
 
-    public AuthTokenInterface()
+    public AuthToken()
     {
         token = "";
         expiration = "";

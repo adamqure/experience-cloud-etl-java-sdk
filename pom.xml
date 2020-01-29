@@ -11,10 +11,16 @@
     <artifactId>experience-cloud-etl-java-sdk</artifactId>
     <version>1.0-SNAPSHOT</version>
     <dependencies>
+        <!--<dependency>-->
+            <!--<groupId>JavaAepSdk</groupId>-->
+            <!--<artifactId>experience-cloud-etl-java-sdk</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.snmp4j/snmp4j -->
         <dependency>
-            <groupId>JavaAepSdk</groupId>
-            <artifactId>experience-cloud-etl-java-sdk</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.snmp4j</groupId>
+            <artifactId>snmp4j</artifactId>
+            <version>2.5.0</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
