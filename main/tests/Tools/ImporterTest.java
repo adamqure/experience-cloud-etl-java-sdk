@@ -1,3 +1,5 @@
+package Tools;
+
 import org.junit.jupiter.api.*;
 
 class ImporterTest {
@@ -19,7 +21,6 @@ class ImporterTest {
         Importer importer = new Importer();
         importer.createJwt();
         System.out.println(importer.getAuthInfo());
-
     }
 
     @Test
