@@ -1,8 +1,8 @@
 package ToolsInterfaces;
 
-public interface ImporterInterface
-{
-    void uploadBatchWithBatchID();
-    void uploadBatchWithDatasetID();
-    void uploadBatchWithSchemaID();
+import ParameterClasses.Schema;
+
+public interface ImporterInterface {
+    String uploadFile(String filename, Schema schema, String datasetId);
+    void getBatchStatus(String batchId);
 }
