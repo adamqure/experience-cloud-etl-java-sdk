@@ -72,6 +72,11 @@ public class AuthInfo {
         return subject;
     }
 
+    public String getExpiration()
+    {
+        return this.accessToken.getExpiration();
+    }
+
     @Override
     public String toString() {
         return "AuthInfo{" +
@@ -86,5 +91,41 @@ public class AuthInfo {
                 ", imsOrgId='" + imsOrgId + '\'' +
                 ", subject='" + subject + '\'' +
                 '}';
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRsaKey(String rsaKey) {
+        this.rsaKey = rsaKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
+    }
+
+    public void setAccessToken(AuthToken accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+    }
+
+    public void setImsOrgId(String imsOrgId) {
+        this.imsOrgId = imsOrgId;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }
