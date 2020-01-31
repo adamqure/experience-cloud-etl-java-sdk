@@ -175,4 +175,17 @@ class ImporterTest {
             testImp.uploadFile("", null, "5e29e7e984479018a93e70a7");
         });
     }
+
+    //Attempt to upload a file with a null for filename
+    //An error should be thrown when attempt to call File fails
+    //with corresponding error message
+    @Test
+    void uploadNullFilename()
+    {
+        testImp.createJwt();
+        testImp.exchangeJwtAuth();
+        Assertions.assertThrows(FileNotFoundException.class, ()->{
+            testImp.uploadFile(null, null, "5e29e7e984479018a93e70a7");
+        });
+    }
 }
