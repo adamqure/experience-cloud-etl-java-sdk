@@ -1,5 +1,6 @@
 package Tools;
 
+import Exceptions.*;
 import ParameterClasses.AuthInfo;
 import ParameterClasses.AuthToken;
 import org.junit.jupiter.api.AfterEach;
@@ -40,7 +41,7 @@ class IngestorTest {
     @Test
     void createBatchEmptyDSID()
     {
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
            testIng.createBatch(testAuth, "");
         });
     }
@@ -49,7 +50,7 @@ class IngestorTest {
     @Test
     void createBatchNullDSID()
     {
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
            testIng.createBatch(testAuth, null);
         });
     }
@@ -59,7 +60,7 @@ class IngestorTest {
     void createBatchNullAPI()
     {
         testAuth.setApiKey(null);
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.createBatch(testAuth, DataSetID);
         });
     }
@@ -69,7 +70,7 @@ class IngestorTest {
     void createBatchEmptyAPIkey()
     {
         testAuth.setApiKey("");
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.createBatch(testAuth, DataSetID);
         });
     }
@@ -79,7 +80,7 @@ class IngestorTest {
     void createBatchEmptyImsOrg()
     {
         testAuth.setImsOrgId("");
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.createBatch(testAuth, DataSetID);
         });
     }
@@ -89,7 +90,7 @@ class IngestorTest {
     void createBatchNullImsOrg()
     {
         testAuth.setImsOrgId(null);
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.createBatch(testAuth, DataSetID);
         });
     }
@@ -99,7 +100,7 @@ class IngestorTest {
     @Test
     void createBatchEmptyAuthInfo()
     {
-        Assertions.assertThrows(Exception.class, ()-> {
+        Assertions.assertThrows(ParameterException.class, ()-> {
             testIng.createBatch(new AuthInfo("", "", ""),
                     DataSetID);
         });
@@ -109,7 +110,7 @@ class IngestorTest {
     @Test
     void createBatchNullAuthInfo()
     {
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.createBatch(null, DataSetID);
         });
     }
@@ -119,7 +120,7 @@ class IngestorTest {
     void createBatchEmptyAuthToken()
     {
         testAuth.setAccessToken(new AuthToken());
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.createBatch(testAuth, DataSetID);
         });
     }
@@ -130,7 +131,7 @@ class IngestorTest {
     void uploadFileEmptyFilename()
     {
         String batchID = testIng.createBatch(testAuth, DataSetID);
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.uploadFileToBatch(testAuth, null, batchID, DataSetID, "");
         });
     }
@@ -140,7 +141,7 @@ class IngestorTest {
     void uploadFileNullFilename()
     {
         String batchID = testIng.createBatch(testAuth, DataSetID);
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.uploadFileToBatch(testAuth, null, batchID, DataSetID, null);
         });
     }
@@ -150,7 +151,7 @@ class IngestorTest {
     void uploadFileEmptyBatchID()
     {
         String batchID = "";
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.uploadFileToBatch(testAuth, null, batchID, DataSetID, null);
         });
     }
@@ -160,7 +161,7 @@ class IngestorTest {
     void uploadFileNullBatchID()
     {
         String batchID = null;
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.uploadFileToBatch(testAuth, null, batchID, DataSetID, null);
         });
     }
@@ -171,7 +172,7 @@ class IngestorTest {
     {
         String batchID = testIng.createBatch(testAuth, DataSetID);
         testAuth = new AuthInfo("", "", "");
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.cancelBatch(testAuth, batchID);
         });
     }
@@ -181,7 +182,7 @@ class IngestorTest {
     {
         String batchID = testIng.createBatch(testAuth, DataSetID);
         testAuth = null;
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.cancelBatch(testAuth, batchID);
         });
     }
@@ -189,7 +190,7 @@ class IngestorTest {
     @Test
     void cancelBatchEmptyBatchID()
     {
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.cancelBatch(testAuth, "");
         });
     }
@@ -197,7 +198,7 @@ class IngestorTest {
     @Test
     void cancelBatchNullBatchID()
     {
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testIng.cancelBatch(testAuth, null);
         });
     }

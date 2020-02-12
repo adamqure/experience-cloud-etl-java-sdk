@@ -1,5 +1,6 @@
 package Tools;
 
+import Exceptions.*;
 import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
@@ -55,8 +56,17 @@ class ImporterTest {
     void createJwtnNullAPIKey()
     {
         testImp.getAuthInfo().setApiKey(null);
-        Assertions.assertThrows(Exception.class, () -> {
+        Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
+        });
+    }
+
+    @Test
+    void createJwtEmptyAPIKey()
+    {
+        testImp.getAuthInfo().setApiKey("");
+        Assertions.assertThrows(ParameterException.class, () ->{
+           testImp.createJwt();
         });
     }
 
@@ -77,7 +87,7 @@ class ImporterTest {
     void createJwtNullImsId()
     {
         testImp.getAuthInfo().setImsOrgId(null);
-        Assertions.assertThrows(Exception.class, () -> {
+        Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
         });
     }
@@ -89,7 +99,7 @@ class ImporterTest {
     void createJwtEmptyImsId()
     {
         testImp.getAuthInfo().setImsOrgId("");
-        Assertions.assertThrows(Exception.class, () -> {
+        Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
         });
     }
@@ -101,7 +111,7 @@ class ImporterTest {
     void createJwtnullSub()
     {
         testImp.getAuthInfo().setSubject(null);
-        Assertions.assertThrows(Exception.class, () -> {
+        Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
         });
     }
@@ -113,7 +123,7 @@ class ImporterTest {
     void createJwtEmptySub()
     {
         testImp.getAuthInfo().setSubject("");
-        Assertions.assertThrows(Exception.class, () -> {
+        Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
         });
     }
@@ -125,7 +135,7 @@ class ImporterTest {
     void exchangeEmptyJwt()
     {
         testImp.getAuthInfo().setJwt("");
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(InvalidExchangeException.class, ()->{
             testImp.exchangeJwtAuth();
         });
     }
@@ -137,7 +147,7 @@ class ImporterTest {
     void exchangeNullJwt()
     {
         testImp.getAuthInfo().setJwt(null);
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testImp.exchangeJwtAuth();
         });
     }
@@ -147,7 +157,7 @@ class ImporterTest {
     void exchangeExpiredJwt()
     {
         testImp.getAuthInfo().setJwt(ExpiredToken);
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(InvalidExchangeException.class, ()->{
            testImp.exchangeJwtAuth();
         });
     }
@@ -159,7 +169,7 @@ class ImporterTest {
     void exchangeJwtEmptyApiKey()
     {
         testImp.getAuthInfo().setApiKey("");
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testImp.exchangeJwtAuth();
         });
     }
@@ -171,7 +181,7 @@ class ImporterTest {
     void exchangeJwtEmptyClientSecret()
     {
         testImp.getAuthInfo().setClientSecret("");
-        Assertions.assertThrows(Exception.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testImp.exchangeJwtAuth();
         });
     }
@@ -185,7 +195,7 @@ class ImporterTest {
     {
         testImp.createJwt();
         testImp.exchangeJwtAuth();
-        Assertions.assertThrows(FileNotFoundException.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testImp.uploadFile("", null, DataSetID);
         });
     }
@@ -198,7 +208,7 @@ class ImporterTest {
     {
         testImp.createJwt();
         testImp.exchangeJwtAuth();
-        Assertions.assertThrows(FileNotFoundException.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testImp.uploadFile(null, null, DataSetID);
         });
     }
@@ -210,7 +220,7 @@ class ImporterTest {
     {
         testImp.createJwt();
         testImp.exchangeJwtAuth();
-        Assertions.assertThrows(FileNotFoundException.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testImp.uploadFile("Tools/test128.json", null, "");
         });
     }
@@ -223,7 +233,7 @@ class ImporterTest {
     {
         testImp.createJwt();
         testImp.exchangeJwtAuth();
-        Assertions.assertThrows(FileNotFoundException.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testImp.uploadFile("Tools/test128.json", null, null);
         });
     }
