@@ -113,9 +113,6 @@ public class Importer implements ImporterInterface {
                 System.out.println("Error when exchanging JWT for Access Token");
             }
         });
-    }
-
-    public String uploadFile(String filename, Schema schema, String datasetId) {
         while (authInfo.getAccessToken().equals("")) {
             try {
                 Thread.sleep(1000);
@@ -124,26 +121,59 @@ public class Importer implements ImporterInterface {
                 Thread.currentThread().interrupt();
             }
         }
+    }
 
-        String batchId = ingestor.createBatch(authInfo, datasetId);
-        if (batchId != null) {
-            ingestor.uploadFileToBatch(authInfo, schema, batchId, datasetId, filename);
-        }
-
-        ingestor.signalBatchComplete(authInfo, batchId);
+    // TODO: Run this asynchronously so that closeBatch can wait for addFileToBatch to finish
+    public String uploadFile(String filename, Schema schema, String datasetId) {
+        String batchId = createBatch(datasetId);
+        addFileToBatch(batchId, datasetId, filename, false);
+        closeBatch(batchId);
         return batchId;
     }
 
-    public void getBatchStatus(String batchId) {
-        while (authInfo.getAccessToken().equals("")) {
-            try {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+    public String uploadFileSync(String filename, Schema schema, String datasetId) {
+        String batchId = createBatch(datasetId);
+        addFileToBatch(batchId, datasetId, filename, true);
+        closeBatch(batchId);
+        return batchId;
+    }
+
+    public String createBatch(String datasetId) {
+        try {
+            return ingestor.createBatch(authInfo, datasetId);
         }
-        cataloguer.getUploadStatus(authInfo, batchId);
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void addFileToBatch(String batchId, String datasetId, String filename, boolean runSync) {
+        try {
+            ingestor.addFileToBatch(authInfo, null, batchId, datasetId, filename, runSync);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeBatch(String batchId) {
+        try {
+            ingestor.signalBatchComplete(authInfo, batchId);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getBatchStatus(String batchId) {
+        try {
+            return cataloguer.getBatchStatus(authInfo, batchId);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public AuthInfo getAuthInfo() {

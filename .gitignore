@@ -25,9 +25,18 @@
 #Config File
 main/Config.xml
 config.json
+.idea
+*.iml
 
 #Test Files
 test128.json
+test100MB.json
+test500MB.json
+test.json
+
+# Temp files
+/temp
+temp
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*

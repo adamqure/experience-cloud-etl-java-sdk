@@ -3,7 +3,10 @@ package Tools;
 import API.API;
 import ParameterClasses.AuthInfo;
 import ToolsInterfaces.CataloguerInterface;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -20,8 +23,9 @@ public class Cataloguer implements CataloguerInterface
     public void createDataset(){
 
     }
+
     @Override
-    public void getUploadStatus(AuthInfo authInfo, String batchId){
+    public String getBatchStatus(AuthInfo authInfo, String batchId){
         System.out.println("GETTING BATCH STATUS");
         Map<String, String> headers = generateHeaders(authInfo, null);
 
@@ -32,18 +36,32 @@ public class Cataloguer implements CataloguerInterface
             response = call.execute();
             System.out.println("STATUS RETRIEVED: " + response.toString());
             System.out.println("BATCH STATUS: " + response.body());
-        } catch (IOException e) {
+
+            JsonElement body = response.body();
+            if (body != null) {
+                JsonObject batchBody = body.getAsJsonObject().getAsJsonObject(batchId);
+
+                JsonPrimitive status = batchBody.getAsJsonPrimitive("status");
+                JsonArray errors = batchBody.getAsJsonArray("errors");
+
+                return status.toString().replace("\"", "");
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
+
     @Override
     public void generateReport(){
 
     }
+
     @Override
     public void getBatchesList(){
 
     }
+
     @Override
     public void getDatasetByID(){
 
