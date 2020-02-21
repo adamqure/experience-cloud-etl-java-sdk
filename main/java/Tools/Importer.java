@@ -20,9 +20,10 @@ import io.jsonwebtoken.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 /**
  * Basic importer class that implements the ImporterInterface
- * Tools.Importer uses an ingestor, validator, and cataloguer
+ * Importer uses an ingestor, validator, and cataloguer internally
  */
 public class Importer implements ImporterInterface {
     private IngestorInterface ingestor;
@@ -50,7 +51,7 @@ public class Importer implements ImporterInterface {
         schemaValidator = new Validator();
     }
 
-    void createJwt() {
+    private void createJwt() {
         //Set a time for the JWT to expire, 10 minutes from the current time
         Date exp = new Date();
         exp.setTime(exp.getTime() + 600000);
@@ -98,7 +99,7 @@ public class Importer implements ImporterInterface {
         this.exchangeJwtAuth();
     }
 
-    void exchangeJwtAuth() {
+    private void exchangeJwtAuth() {
         Call<AuthToken> call = API.getAuthService().getAuthToken(authInfo.getApiKey(), authInfo.getClientSecret(), authInfo.getJwt());
         call.enqueue(new Callback<AuthToken>(){
             @Override
@@ -124,6 +125,14 @@ public class Importer implements ImporterInterface {
     }
 
     // TODO: Run this asynchronously so that closeBatch can wait for addFileToBatch to finish
+    /**
+     * Asynchronously uploads a file to a given dataset.
+     * It creates a new batch, adds the file to the batch, and signals the batch is complete.
+     * @param filename is the name of the file to be uploaded.
+     * @param schema is the schema of the dataset being uploaded to.
+     * @param datasetId is the id of the dataset to be uploaded to.
+     * @return is the id of the batch created.
+     */
     public String uploadFile(String filename, Schema schema, String datasetId) {
         String batchId = createBatch(datasetId);
         addFileToBatch(batchId, datasetId, filename, false);
@@ -131,6 +140,14 @@ public class Importer implements ImporterInterface {
         return batchId;
     }
 
+    /**
+     * Synchronously uploads a file to a given dataset.
+     * It creates a new batch, adds the file to the batch, and signals the batch is complete.
+     * @param filename is the name of the file to be uploaded.
+     * @param schema is the schema of the dataset being uploaded to.
+     * @param datasetId is the id of the dataset to be uploaded to.
+     * @return is the id of the batch created.
+     */
     public String uploadFileSync(String filename, Schema schema, String datasetId) {
         String batchId = createBatch(datasetId);
         addFileToBatch(batchId, datasetId, filename, true);
@@ -138,6 +155,11 @@ public class Importer implements ImporterInterface {
         return batchId;
     }
 
+    /**
+     * Creates a batch for uploading files to the specified given dataset.
+     * @param datasetId is the id of the dataset to be uploaded to.
+     * @return is the id of the batch created.
+     */
     public String createBatch(String datasetId) {
         try {
             return ingestor.createBatch(authInfo, datasetId);
@@ -148,6 +170,13 @@ public class Importer implements ImporterInterface {
         return null;
     }
 
+    /**
+     * Adds a file to an existing batch to be uploaded
+     * @param batchId is the id of the batch the file is to be added to.
+     * @param datasetId is the id of the dataset the file is to be uploaded to.
+     * @param filename is the path of the file to be uploaded.
+     * @param runSync is whether or not the file should be added synchronously.
+     */
     public void addFileToBatch(String batchId, String datasetId, String filename, boolean runSync) {
         try {
             ingestor.addFileToBatch(authInfo, null, batchId, datasetId, filename, runSync);
@@ -157,6 +186,10 @@ public class Importer implements ImporterInterface {
         }
     }
 
+    /**
+     * Closes an existing batch, signaling no more files will be added.
+     * @param batchId is the id of the batch to be closed.
+     */
     public void closeBatch(String batchId) {
         try {
             ingestor.signalBatchComplete(authInfo, batchId);
@@ -166,6 +199,11 @@ public class Importer implements ImporterInterface {
         }
     }
 
+    /**
+     * Gets the status for a batch that has been created.
+     * @param batchId is the id of the batch whose status is requested.
+     * @return is the status of the batch.
+     */
     public String getBatchStatus(String batchId) {
         try {
             return cataloguer.getBatchStatus(authInfo, batchId);
@@ -176,6 +214,10 @@ public class Importer implements ImporterInterface {
         return null;
     }
 
+    /**
+     * Gets the auth header information being used for requests
+     * @return is an object containing the auth header info
+     */
     public AuthInfo getAuthInfo() {
         return authInfo;
     }
