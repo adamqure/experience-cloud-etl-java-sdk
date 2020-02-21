@@ -1,18 +1,16 @@
 package Tools;
 
-import ParameterClasses.Abstracts.AuthTokenInterface;
-import ParameterClasses.Abstracts.DataSetIdInterface;
-import ParameterClasses.Abstracts.SchemaInterface;
+import ParameterClasses.AuthInfo;
+import ParameterClasses.Schema;
 import ToolsInterfaces.ValidatorInterface;
 
 /**
  * Basic validator that implements the validator interface
  */
-public class Validator implements ValidatorInterface
-{
+public class Validator implements ValidatorInterface {
 
     @Override
-    public void validateSchema(SchemaInterface schema, DataSetIdInterface dataSetId, AuthTokenInterface authToken) {
+    public void validateSchema(Schema schema, String dataSetId, AuthInfo authInfo) {
 
     }
     @Override
