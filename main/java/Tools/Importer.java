@@ -1,6 +1,8 @@
 package Tools;
 
 import API.API;
+import Exceptions.InvalidExchangeException;
+import Exceptions.ParameterException;
 import ParameterClasses.*;
 import ToolsInterfaces.*;
 
@@ -31,32 +33,54 @@ public class Importer implements ImporterInterface {
 
     private AuthInfo authInfo;
 
-    public Importer() {
+    public Importer()
+    {
         Gson deserializer = new Gson();
         File config = new File("config.json");
         authInfo = null;
-        try {
+        try
+        {
             String text = new Scanner(config).useDelimiter("\\A").next();
             authInfo = deserializer.fromJson(text, AuthInfo.class);
             authInfo.addAuthToken(new AuthToken());
+            createJwt();
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
-        createJwt();
 
         cataloguer = new Cataloguer();
         ingestor = new Ingestor();
         schemaValidator = new Validator();
     }
 
-    void createJwt() {
+    void createJwt() throws ParameterException, InvalidExchangeException
+    {
         //Set a time for the JWT to expire, 10 minutes from the current time
         Date exp = new Date();
         exp.setTime(exp.getTime() + 600000);
         byte[] bytes;
         RSAPrivateKey privKey = null;
-        try {
+        // Check parameters for null and empty string values before attempting creation
+        if(authInfo.getApiKey() == null || authInfo.getApiKey() == "")
+        {
+            throw new ParameterException("Api key cannot be null or an empty string");
+        }
+        if(authInfo.getRsaKey() == null || authInfo.getRsaKey() == "")
+        {
+            throw new ParameterException("RSA key cannot be null or an empty string");
+        }
+        if(authInfo.getImsOrgId() == null || authInfo.getImsOrgId() == "")
+        {
+            throw new ParameterException("IMS org ID cannot be null or an empty string");
+        }
+        if(authInfo.getSubject() == null | authInfo.getSubject() == "")
+        {
+            throw new ParameterException("Subject cannot be null or empty string");
+        }
+        try
+        {
             String keyString = authInfo.getRsaKey();
             keyString = keyString.replace("\\s+", "");
             keyString = keyString.replace("\n", "");
@@ -67,19 +91,25 @@ public class Importer implements ImporterInterface {
             KeySpec keySpec = new PKCS8EncodedKeySpec(bytes);
             privKey = (RSAPrivateKey) factory.generatePrivate(keySpec);
         }
-        catch (NoSuchAlgorithmException e) {
+        catch (NoSuchAlgorithmException e)
+        {
             e.printStackTrace();
             System.out.println("Some error occured when attempting to get the Key factory for the RSAPrivateKey");
         }
-        catch (InvalidKeySpecException e) {
+        catch (InvalidKeySpecException e)
+        {
             e.printStackTrace();
             System.out.println("Invalid Key spec when attempting to create a JWT with your RSA private key. Please check your" +
                     "config file and RSA key");
+            throw new InvalidExchangeException("Key Spec was not created properly, usually this is something " +
+                    "wrong with the information in your config file");
         }
-        if (privKey == null) {
+        if (privKey == null)
+        {
             //TODO Set proper error handling in the case that we get to here without a proper Key
             System.out.println("Something went wrong in the creation of the JSON Web Token (JWT) Most likely problem is" +
                     "a config file not formatted correctly or an incorrect RSA key formatting");
+            throw new ParameterException("An error happened in the conversion from string to RSA Key, check config file");
         }
         SignatureAlgorithm rs = SignatureAlgorithm.RS256;
         Map<String, Object> metas = new HashMap<>();
@@ -95,21 +125,43 @@ public class Importer implements ImporterInterface {
         byte[] holder = Jwt.getBytes(StandardCharsets.ISO_8859_1);
         Jwt = new String(holder, StandardCharsets.UTF_8);
         authInfo.setJwt(Jwt);
-        this.exchangeJwtAuth();
     }
 
-    void exchangeJwtAuth() {
+    void exchangeJwtAuth() throws ParameterException, InvalidExchangeException
+    {
+        if(authInfo.getJwt() == null || authInfo.getJwt() == "")
+        {
+            throw new ParameterException("Jwt is null or an empty string, this will not be able to be exchanged properly");
+        }
+        if(authInfo.getApiKey() == null || authInfo.getApiKey() == "")
+        {
+            throw new ParameterException("API key is null or an empty string when attempting to exchange JWT for Access Token");
+        }
+        if(authInfo.getClientSecret() == null || authInfo.getClientSecret() == "")
+        {
+            throw new ParameterException("Client Secret is null or an empty string when attempting to exchange JWT");
+        }
         Call<AuthToken> call = API.getAuthService().getAuthToken(authInfo.getApiKey(), authInfo.getClientSecret(), authInfo.getJwt());
         call.enqueue(new Callback<AuthToken>(){
             @Override
             // TODO: Complete error checking
-            public void onResponse(Call<AuthToken> call, Response<AuthToken> response) {
+            public void onResponse(Call<AuthToken> call, Response<AuthToken> response)
+            {
                 authInfo.addAuthToken(response.body());
-                System.out.println("EXCHANGED JWT: " + authInfo.getAccessToken());
+                if(response.body() == null || authInfo.getAccessToken() == null
+                        || authInfo.getAccessToken() == "")
+                {
+
+                }
+                else
+                {
+                    System.out.println("EXCHANGED JWT: " + authInfo.getAccessToken());
+                }
             }
 
             @Override
-            public void onFailure(Call<AuthToken> call, Throwable t) {
+            public void onFailure(Call<AuthToken> call, Throwable t)
+            {
                 System.out.println("Error when exchanging JWT for Access Token");
             }
         });
@@ -124,7 +176,20 @@ public class Importer implements ImporterInterface {
     }
 
     // TODO: Run this asynchronously so that closeBatch can wait for addFileToBatch to finish
-    public String uploadFile(String filename, Schema schema, String datasetId) {
+    public String uploadFile(String filename, Schema schema, String datasetId) throws ParameterException
+    {
+        if(filename == null || filename == "")
+        {
+            throw new ParameterException("Filename for upload cannot be null or empty string");
+        }
+        if(datasetId == null || datasetId == "")
+        {
+            throw new ParameterException("Dataset ID is null or an empty string, cannot upload without a dataset ID");
+        }
+        if(authInfo.getClientSecret() == null || authInfo.getClientSecret() == "")
+        {
+            throw new ParameterException("Client secret is null, this will likely result in an error when querying the API");
+        }
         String batchId = createBatch(datasetId);
         addFileToBatch(batchId, datasetId, filename, false);
         closeBatch(batchId);

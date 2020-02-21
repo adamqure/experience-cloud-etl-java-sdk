@@ -44,7 +44,8 @@ public class AuthInfo {
         return apiKey;
     }
 
-    public String getAccessToken() {
+    public String getAccessToken()
+    {
         return accessToken.getToken();
     }
 

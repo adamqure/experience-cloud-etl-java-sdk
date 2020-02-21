@@ -8,7 +8,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class IngestorTest {
+import java.io.IOException;
+
+class IngestorTest
+{
     Ingestor testIng;
     AuthInfo testAuth;
     String DataSetID = "5e29e7e984479018a93e70a7";
@@ -25,16 +28,26 @@ class IngestorTest {
             "TG4wY3VRVmiwVmmW3lQAJ5aL6N7O1rWUqEEb9tXHM9UJSKeFTdlsmyAX_MV9TK9-zB5kDpkhMK41rQiwUVWzCkB1gawJPutweGv5GiUieOO" +
             "lwLz0GfD5oH5aoA8FYXt9_hFziQPP55yVoxbYWuOPFMiqRBWmL_zbne8D4Kn7Uwg86399989";
     @BeforeEach
-    void setUp() {
-        testIng = new Ingestor();
-        Importer tempImp = new Importer();
-        tempImp.createJwt();
-        tempImp.exchangeJwtAuth();
-        testAuth = tempImp.getAuthInfo();
+    void setUp()
+    {
+        try
+        {
+            testIng = new Ingestor();
+            Importer tempImp = new Importer();
+            tempImp.createJwt();
+            tempImp.exchangeJwtAuth();
+            testAuth = tempImp.getAuthInfo();
+        }
+        catch(ParameterException | InvalidExchangeException e)
+        {
+            e.printStackTrace();
+
+        }
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown()
+    {
     }
 /** SECTION, CREATE BATCH TESTS */
     //Attempt to create a batch without a dataset ID
@@ -130,20 +143,40 @@ class IngestorTest {
     @Test
     void uploadFileEmptyFilename()
     {
-        String batchID = testIng.createBatch(testAuth, DataSetID);
-        Assertions.assertThrows(ParameterException.class, ()->{
-            testIng.uploadFileToBatch(testAuth, null, batchID, DataSetID, "");
-        });
+        try
+        {
+            String batchID = testIng.createBatch(testAuth, DataSetID);
+            Assertions.assertThrows(ParameterException.class, () ->
+            {
+                testIng.addFileToBatch(testAuth, null, batchID, DataSetID, "", true);
+            });
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error in createBatch while testing UploadFileEmptyFilename");
+            Assertions.assertTrue(false);
+        }
     }
 
     //Attempt to upload to an already created batch with a null filename
     @Test
     void uploadFileNullFilename()
     {
-        String batchID = testIng.createBatch(testAuth, DataSetID);
-        Assertions.assertThrows(ParameterException.class, ()->{
-            testIng.uploadFileToBatch(testAuth, null, batchID, DataSetID, null);
-        });
+        try
+        {
+            String batchID = testIng.createBatch(testAuth, DataSetID);
+            Assertions.assertThrows(ParameterException.class, () ->
+            {
+                testIng.addFileToBatch(testAuth, null, batchID, DataSetID, null, true);
+            });
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error in createBatch while testing UploadFileNullFilename");
+            Assertions.assertTrue(false);
+        }
     }
 
     //Attempt to upload to an already created batch with an empty string in batchID
@@ -152,7 +185,7 @@ class IngestorTest {
     {
         String batchID = "";
         Assertions.assertThrows(ParameterException.class, ()->{
-            testIng.uploadFileToBatch(testAuth, null, batchID, DataSetID, null);
+            testIng.addFileToBatch(testAuth, null, batchID, DataSetID, null, true);
         });
     }
 
@@ -162,7 +195,7 @@ class IngestorTest {
     {
         String batchID = null;
         Assertions.assertThrows(ParameterException.class, ()->{
-            testIng.uploadFileToBatch(testAuth, null, batchID, DataSetID, null);
+            testIng.addFileToBatch(testAuth, null, batchID, DataSetID, null, true);
         });
     }
 
@@ -170,21 +203,41 @@ class IngestorTest {
     @Test
     void cancelBatchEmptyAuthInfo()
     {
-        String batchID = testIng.createBatch(testAuth, DataSetID);
-        testAuth = new AuthInfo("", "", "");
-        Assertions.assertThrows(ParameterException.class, ()->{
-            testIng.cancelBatch(testAuth, batchID);
-        });
+        try
+        {
+            String batchID = testIng.createBatch(testAuth, DataSetID);
+            testAuth = new AuthInfo("", "", "");
+            Assertions.assertThrows(ParameterException.class, () ->
+            {
+                testIng.cancelBatch(testAuth, batchID);
+            });
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error in createBatch while testing CancelBatchEmptyAuthInfo");
+            Assertions.assertTrue(false);
+        }
     }
 
     @Test
     void cancelBatchNullAuthInfo()
     {
-        String batchID = testIng.createBatch(testAuth, DataSetID);
-        testAuth = null;
-        Assertions.assertThrows(ParameterException.class, ()->{
-            testIng.cancelBatch(testAuth, batchID);
-        });
+        try
+        {
+            String batchID = testIng.createBatch(testAuth, DataSetID);
+            testAuth = null;
+            Assertions.assertThrows(ParameterException.class, () ->
+            {
+                testIng.cancelBatch(testAuth, batchID);
+            });
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error in createBatch while testing CancelBatchNullAuthInfo");
+            Assertions.assertTrue(false);
+        }
     }
 
     @Test

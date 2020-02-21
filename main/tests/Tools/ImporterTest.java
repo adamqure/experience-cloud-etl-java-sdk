@@ -6,7 +6,8 @@ import org.junit.jupiter.api.*;
 import java.io.FileNotFoundException;
 import java.security.InvalidKeyException;
 
-class ImporterTest {
+class ImporterTest
+{
     Importer testImp;
     String DataSetID = "5e29e7e984479018a93e70a7";
     String ExpiredToken = "eyJ4NXUiOiJpbXNfbmExLWtleS0xLmNlciIsImFsZyI6IlJTMjU2In0.eyJpZCI6IjE1ODA3NTU5MzM0OTFfNTM3ZDZi" +
@@ -22,12 +23,14 @@ class ImporterTest {
             "TG4wY3VRVmiwVmmW3lQAJ5aL6N7O1rWUqEEb9tXHM9UJSKeFTdlsmyAX_MV9TK9-zB5kDpkhMK41rQiwUVWzCkB1gawJPutweGv5GiUieOO" +
             "lwLz0GfD5oH5aoA8FYXt9_hFziQPP55yVoxbYWuOPFMiqRBWmL_zbne8D4Kn7Uwg86399989";
     @BeforeEach
-    void setUp() {
+    void setUp()
+    {
         testImp = new Importer();
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown()
+    {
     }
 
     @Test
@@ -40,21 +43,36 @@ class ImporterTest {
     @Test
     void createJwtAndExchange()
     {
-        testImp.createJwt();
-        while (testImp.getAuthInfo().getAccessToken() == "")
+        System.out.println("in create and exchange test");
+        try
         {
-            try
-            { Thread.sleep(1000); }
-            catch (InterruptedException e)
-            { Thread.currentThread().interrupt(); }
+            testImp.createJwt();
+            testImp.exchangeJwtAuth();
+            while (testImp.getAuthInfo().getAccessToken() == "")
+            {
+                try
+                {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e)
+                {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            assert testImp.getAuthInfo().getAccessToken() != "" && testImp.getAuthInfo().getExpiration() != null;
         }
-        assert testImp.getAuthInfo().getAccessToken() != "" && testImp.getAuthInfo().getExpiration() != null;
+        catch (ParameterException | InvalidExchangeException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error when attempting to create JWT before proper Exchange test");
+            Assertions.assertTrue(false);
+        }
     }
 
     //Attempt to create a JWT with a null API Key
     @Test
     void createJwtnNullAPIKey()
     {
+        System.out.println("in createJWTNullAPI test");
         testImp.getAuthInfo().setApiKey(null);
         Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
@@ -64,6 +82,7 @@ class ImporterTest {
     @Test
     void createJwtEmptyAPIKey()
     {
+        System.out.println("in createJWTEmptyAPI");
         testImp.getAuthInfo().setApiKey("");
         Assertions.assertThrows(ParameterException.class, () ->{
            testImp.createJwt();
@@ -74,8 +93,20 @@ class ImporterTest {
     @Test
     void createJwtEmptyRSAKey()
     {
+        System.out.println("in createJWTEmptyRSA test");
         testImp.getAuthInfo().setRsaKey("");
-        Assertions.assertThrows(InvalidKeyException.class, () -> {
+        Assertions.assertThrows(ParameterException.class, () -> {
+            testImp.createJwt();
+        });
+    }
+
+    //Attempt to create a JWT with an empty string for RSA key
+    @Test
+    void createJwtNullRSAKey()
+    {
+        System.out.println("in createJWTNullRSA test");
+        testImp.getAuthInfo().setRsaKey(null);
+        Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
         });
     }
@@ -86,6 +117,7 @@ class ImporterTest {
     @Test
     void createJwtNullImsId()
     {
+        System.out.println("in createJWTnullIMS test");
         testImp.getAuthInfo().setImsOrgId(null);
         Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
@@ -98,6 +130,7 @@ class ImporterTest {
     @Test
     void createJwtEmptyImsId()
     {
+        System.out.println("in createJWTemptyIMS test");
         testImp.getAuthInfo().setImsOrgId("");
         Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
@@ -110,6 +143,7 @@ class ImporterTest {
     @Test
     void createJwtnullSub()
     {
+        System.out.println("in createJWTNullSub test");
         testImp.getAuthInfo().setSubject(null);
         Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
@@ -122,40 +156,43 @@ class ImporterTest {
     @Test
     void createJwtEmptySub()
     {
+        System.out.println("in createJWTEmptySub test");
         testImp.getAuthInfo().setSubject("");
         Assertions.assertThrows(ParameterException.class, () -> {
             testImp.createJwt();
         });
     }
-
+/** SECTION: EXCHANGEJWT TESTS */
     //Attempt to exchange an empty string JWT
     //Should not even attempt the exchange. Should print
     //an error message and throw an exception
     @Test
     void exchangeEmptyJwt()
     {
+        System.out.println("in ExchangeEmptyJWT test");
         testImp.getAuthInfo().setJwt("");
-        Assertions.assertThrows(InvalidExchangeException.class, ()->{
+        Assertions.assertThrows(ParameterException.class, ()->{
             testImp.exchangeJwtAuth();
         });
     }
 
-/** SECTION: EXCHANGEJWT TESTS */
     //Attempt to exchange a jwt that is null
     //Should print an error message and throw an exception
     @Test
     void exchangeNullJwt()
     {
+        System.out.println("in ExchangeNullJWT test");
         testImp.getAuthInfo().setJwt(null);
         Assertions.assertThrows(ParameterException.class, ()->{
             testImp.exchangeJwtAuth();
         });
     }
 
-    //TODO Async in order to wait for API call
+    //TODO Async in order to wait for API call since we will not know it is expired until the request has completed
     @Test
     void exchangeExpiredJwt()
     {
+        System.out.println("in ExchangeExpiredJWT test");
         testImp.getAuthInfo().setJwt(ExpiredToken);
         Assertions.assertThrows(InvalidExchangeException.class, ()->{
            testImp.exchangeJwtAuth();
@@ -168,7 +205,18 @@ class ImporterTest {
     @Test
     void exchangeJwtEmptyApiKey()
     {
+        System.out.println("in ExchangeEmptyAPIKey test");
         testImp.getAuthInfo().setApiKey("");
+        Assertions.assertThrows(ParameterException.class, ()->{
+            testImp.exchangeJwtAuth();
+        });
+    }
+
+    @Test
+    void exchangeJwtNullApiKey()
+    {
+        System.out.println("in ExchangeNullAPIKey test");
+        testImp.getAuthInfo().setApiKey(null);
         Assertions.assertThrows(ParameterException.class, ()->{
             testImp.exchangeJwtAuth();
         });
@@ -180,6 +228,7 @@ class ImporterTest {
     @Test
     void exchangeJwtEmptyClientSecret()
     {
+        System.out.println("in ExchangeEmptyClientSecret test");
         testImp.getAuthInfo().setClientSecret("");
         Assertions.assertThrows(ParameterException.class, ()->{
             testImp.exchangeJwtAuth();
@@ -193,11 +242,21 @@ class ImporterTest {
     @Test
     void uploadEmptyFilename()
     {
-        testImp.createJwt();
-        testImp.exchangeJwtAuth();
-        Assertions.assertThrows(ParameterException.class, ()->{
-            testImp.uploadFile("", null, DataSetID);
-        });
+        try
+        {
+            testImp.createJwt();
+            testImp.exchangeJwtAuth();
+            Assertions.assertThrows(ParameterException.class, () ->
+            {
+                testImp.uploadFile("", null, DataSetID);
+            });
+        }
+        catch (ParameterException | InvalidExchangeException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error in createJWT when attempting uploadEmptyFilename test");
+            Assertions.assertTrue(false);
+        }
     }
 
     //Attempt to upload a file with a null for filename
@@ -206,11 +265,21 @@ class ImporterTest {
     @Test
     void uploadNullFilename()
     {
-        testImp.createJwt();
-        testImp.exchangeJwtAuth();
-        Assertions.assertThrows(ParameterException.class, ()->{
-            testImp.uploadFile(null, null, DataSetID);
-        });
+        try
+        {
+            testImp.createJwt();
+            testImp.exchangeJwtAuth();
+            Assertions.assertThrows(ParameterException.class, () ->
+            {
+                testImp.uploadFile(null, null, DataSetID);
+            });
+        }
+        catch (ParameterException | InvalidExchangeException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error in createJWT when attempting uploadNullFilename test");
+            Assertions.assertTrue(false);
+        }
     }
 
     //Attempt to upload a file with an empty string for DataSetID
@@ -218,11 +287,21 @@ class ImporterTest {
     @Test
     void uploadEmptyDSId()
     {
-        testImp.createJwt();
-        testImp.exchangeJwtAuth();
-        Assertions.assertThrows(ParameterException.class, ()->{
-            testImp.uploadFile("Tools/test128.json", null, "");
-        });
+        try
+        {
+            testImp.createJwt();
+            testImp.exchangeJwtAuth();
+            Assertions.assertThrows(ParameterException.class, () ->
+            {
+                testImp.uploadFile("Tools/test128.json", null, "");
+            });
+        }
+        catch (ParameterException | InvalidExchangeException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error in createJWT when attempting uploadEmptyDSId test");
+            Assertions.assertTrue(false);
+        }
     }
 
     //Attempt to upload a file with a null for filename
@@ -231,10 +310,20 @@ class ImporterTest {
     @Test
     void uploadNullDataSetID()
     {
-        testImp.createJwt();
-        testImp.exchangeJwtAuth();
-        Assertions.assertThrows(ParameterException.class, ()->{
-            testImp.uploadFile("Tools/test128.json", null, null);
-        });
+        try
+        {
+            testImp.createJwt();
+            testImp.exchangeJwtAuth();
+            Assertions.assertThrows(ParameterException.class, () ->
+            {
+                testImp.uploadFile("test128.json", null, null);
+            });
+        }
+        catch (ParameterException | InvalidExchangeException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error in createJWT when attempting uploadNullDSId test");
+            Assertions.assertTrue(false);
+        }
     }
 }
