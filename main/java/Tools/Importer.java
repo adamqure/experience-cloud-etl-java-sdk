@@ -132,7 +132,7 @@ public class Importer implements ImporterInterface {
     void exchangeJwtAuth() throws ParameterException, InvalidExchangeException
     {
         final boolean[] success = {false};
-        final String[] message = {"message"};
+        final String[] message = {"message", "error"};
         if(authInfo.getJwt() == null || authInfo.getJwt() == "")
         {
             throw new ParameterException("Jwt is null or an empty string, this will not be able to be exchanged properly");
@@ -167,6 +167,7 @@ public class Importer implements ImporterInterface {
                         e.printStackTrace();
                         System.out.println("IO Error when attempting to retrieve the error message from failed API call");
                     }
+                    System.out.println(message[0] +"\n"+message[1]);
                 }
             }
 
@@ -189,8 +190,7 @@ public class Importer implements ImporterInterface {
         }
         if (success[0] == false)
         {
-            throw new InvalidExchangeException("The JWT was rejected by Adobe, error was " + message[0] +
-                    " This is usually caused by bad input when creating the JWT");
+            throw new InvalidExchangeException(message[0] +"\n"+message[1]);
         }
     }
 
