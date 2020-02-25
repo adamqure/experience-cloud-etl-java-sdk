@@ -29,6 +29,12 @@ public class Ingestor implements IngestorInterface {
     final long MAX_FILE_SIZE = (long) 1e8;
     boolean isWaiting = false;
 
+    /**
+     * Creates new batch for uploading files
+     * @param authInfo contains auth header information for request
+     * @param datasetId is the id of the dataset being uploaded to
+     * @return is the id of the newly-created batch
+     */
     @Override
     public String createBatch(AuthInfo authInfo, String datasetId) throws IOException {
         System.out.println("CREATING BATCH");
@@ -49,6 +55,16 @@ public class Ingestor implements IngestorInterface {
         return null;
     }
 
+    /**
+     * Adds a file to an existing batch for upload
+     * @param authInfo contains auth header information for request
+     * @param schema is the schema for the file being uploaded (must match target dataset schema)
+     * @param batchId is the id of the batch the file is to be added to
+     * @param datasetId is the id of the dataset the file is to be uploaded to
+     * @param filename is the name of the file to be uploaded
+     * @param runSync determines whether or not the file should be added synchronously
+     * @return true if file is added successfully, otherwise false
+     */
     @Override
     public boolean addFileToBatch(AuthInfo authInfo, Schema schema, String batchId, String datasetId, String filename, boolean runSync) throws IOException {
         System.out.println("UPLOADING FILE: " + filename);
@@ -78,6 +94,11 @@ public class Ingestor implements IngestorInterface {
         }
     }
 
+    /**
+     * Splits a large json file into smaller json files that follow the same format as the original
+     * @param filename is the name of the file to be split
+     * @return is a List of the names of the generated files
+     */
     public List<String> splitLargeFile(String filename) throws Exception {
         print("SPLITTING LARGE FILE");
         File tempDir = new File("temp");
@@ -228,6 +249,11 @@ public class Ingestor implements IngestorInterface {
         return true;
     }
 
+    /**
+     * Signals that a batch is complete and no more files will be added
+     * @param authInfo contains the auth header info for the request
+     * @param batchId is the id of the batch being completed
+     */
     @Override
     public void signalBatchComplete(AuthInfo authInfo, String batchId) throws IOException {
         Map<String, String> headers = generateHeaders(authInfo, null);
@@ -252,6 +278,9 @@ public class Ingestor implements IngestorInterface {
 //        awaitResponse();
     }
 
+    /**
+     * Cancels an existing batch upload
+     */
     @Override
     public void cancelBatch(AuthInfo authInfo, String batchId) throws IOException {
 
