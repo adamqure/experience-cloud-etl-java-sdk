@@ -167,7 +167,6 @@ public class Importer implements ImporterInterface {
                         e.printStackTrace();
                         System.out.println("IO Error when attempting to retrieve the error message from failed API call");
                     }
-                    System.out.println(message[0] +"\n"+message[1]);
                 }
             }
 
@@ -190,6 +189,7 @@ public class Importer implements ImporterInterface {
         }
         if (success[0] == false)
         {
+            System.out.println("Failed exchange of JWT for Access Token, usually caused by improper JWT creation");
             throw new InvalidExchangeException(message[0] +"\n"+message[1]);
         }
     }

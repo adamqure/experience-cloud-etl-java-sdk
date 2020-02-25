@@ -22,6 +22,8 @@ class ImporterTest
             "3hXEbZWkr9Ta1BezbjTvSnpgtYbNFAs4M2mYnVHpzqCgJQxI41JzQKHAqj94_dHNJIWvHJERnME1L9dX0DHSmFSTSZVwOUZWT7HFdZg-2wP" +
             "TG4wY3VRVmiwVmmW3lQAJ5aL6N7O1rWUqEEb9tXHM9UJSKeFTdlsmyAX_MV9TK9-zB5kDpkhMK41rQiwUVWzCkB1gawJPutweGv5GiUieOO" +
             "lwLz0GfD5oH5aoA8FYXt9_hFziQPP55yVoxbYWuOPFMiqRBWmL_zbne8D4Kn7Uwg86399989";
+    String invalidToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0" +
+            "IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
     @BeforeEach
     void setUp()
     {
@@ -184,6 +186,16 @@ class ImporterTest
         System.out.println("in ExchangeNullJWT test");
         testImp.getAuthInfo().setJwt(null);
         Assertions.assertThrows(ParameterException.class, ()->{
+            testImp.exchangeJwtAuth();
+        });
+    }
+
+    @Test
+    void exchangeInvalidJWT()
+    {
+        System.out.println("in exchangeInvalidJWT");
+        testImp.getAuthInfo().setJwt(invalidToken);
+        Assertions.assertThrows(InvalidExchangeException.class, ()->{
             testImp.exchangeJwtAuth();
         });
     }
