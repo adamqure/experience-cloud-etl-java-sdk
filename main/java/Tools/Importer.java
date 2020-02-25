@@ -127,8 +127,11 @@ public class Importer implements ImporterInterface {
         authInfo.setJwt(Jwt);
     }
 
+    //TODO Write tests for bad JWT (created with wrong but valid input)
     void exchangeJwtAuth() throws ParameterException, InvalidExchangeException
     {
+        final boolean[] success = {false};
+        final String[] message = {"message"};
         if(authInfo.getJwt() == null || authInfo.getJwt() == "")
         {
             throw new ParameterException("Jwt is null or an empty string, this will not be able to be exchanged properly");
@@ -151,11 +154,13 @@ public class Importer implements ImporterInterface {
                 if(response.body() == null || authInfo.getAccessToken() == null
                         || authInfo.getAccessToken() == "")
                 {
-
+                    message[0] = "Error :" + response.message() + " response code: " + response.code();
+                    System.out.println(message[0]);
                 }
                 else
                 {
                     System.out.println("EXCHANGED JWT: " + authInfo.getAccessToken());
+                    success[0] = true;
                 }
             }
 
@@ -165,13 +170,21 @@ public class Importer implements ImporterInterface {
                 System.out.println("Error when exchanging JWT for Access Token");
             }
         });
-        while (authInfo.getAccessToken().equals("")) {
-            try {
+        while (authInfo.getAccessToken() != null && authInfo.getAccessToken().equals(""))
+        {
+            try
+            {
                 Thread.sleep(1000);
             }
-            catch (InterruptedException e) {
+            catch (InterruptedException e)
+            {
                 Thread.currentThread().interrupt();
             }
+        }
+        if (success[0] == false)
+        {
+            throw new InvalidExchangeException("The JWT was rejected by Adobe, error was " + message[0] +
+                    " This is usually caused by bad input when creating the JWT");
         }
     }
 
@@ -196,46 +209,80 @@ public class Importer implements ImporterInterface {
         return batchId;
     }
 
-    public String uploadFileSync(String filename, Schema schema, String datasetId) {
+    //TODO create test cases for this method
+    public String uploadFileSync(String filename, Schema schema, String datasetId) throws ParameterException
+    {
+        if(filename == null || filename == "")
+        {
+            throw new ParameterException("Filename for upload cannot be null or empty string");
+        }
+        if(datasetId == null || datasetId == "")
+        {
+            throw new ParameterException("Dataset ID is null or an empty string, cannot upload without a dataset ID");
+        }
+        if(authInfo.getClientSecret() == null || authInfo.getClientSecret() == "")
+        {
+            throw new ParameterException("Client secret is null, this will likely result in an error when querying the API");
+        }
         String batchId = createBatch(datasetId);
         addFileToBatch(batchId, datasetId, filename, true);
         closeBatch(batchId);
         return batchId;
     }
 
-    public String createBatch(String datasetId) {
-        try {
+    //TODO create test cases for this method
+    public String createBatch(String datasetId) throws ParameterException
+    {
+        if (datasetId == null || datasetId == "")
+        {
+            throw new ParameterException("DataSet ID cannot be null or an empty string");
+        }
+        try
+        {
             return ingestor.createBatch(authInfo, datasetId);
         }
-        catch(Exception e) {
+        catch(Exception e)
+        {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void addFileToBatch(String batchId, String datasetId, String filename, boolean runSync) {
-        try {
+    //TODO create test cases for this method
+    public void addFileToBatch(String batchId, String datasetId, String filename, boolean runSync)
+    {
+        try
+        {
             ingestor.addFileToBatch(authInfo, null, batchId, datasetId, filename, runSync);
         }
-        catch(Exception e) {
+        catch(Exception e)
+        {
             e.printStackTrace();
         }
     }
 
-    public void closeBatch(String batchId) {
-        try {
+    //TODO create test cases for this method
+    public void closeBatch(String batchId)
+    {
+        try
+        {
             ingestor.signalBatchComplete(authInfo, batchId);
         }
-        catch(Exception e) {
+        catch(Exception e)
+        {
             e.printStackTrace();
         }
     }
 
-    public String getBatchStatus(String batchId) {
-        try {
+    //TODO create test cases for this method
+    public String getBatchStatus(String batchId)
+    {
+        try
+        {
             return cataloguer.getBatchStatus(authInfo, batchId);
         }
-        catch(Exception e) {
+        catch(Exception e)
+        {
             e.printStackTrace();
         }
         return null;

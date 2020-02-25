@@ -30,7 +30,8 @@ public class Ingestor implements IngestorInterface {
     boolean isWaiting = false;
 
     @Override
-    public String createBatch(AuthInfo authInfo, String datasetId) throws IOException {
+    public String createBatch(AuthInfo authInfo, String datasetId) throws IOException
+    {
         System.out.println("CREATING BATCH");
         Map<String, String> headers = generateHeaders(authInfo, "application/json");
 
@@ -50,10 +51,12 @@ public class Ingestor implements IngestorInterface {
     }
 
     @Override
-    public boolean addFileToBatch(AuthInfo authInfo, Schema schema, String batchId, String datasetId, String filename, boolean runSync) throws IOException {
+    public boolean addFileToBatch(AuthInfo authInfo, Schema schema, String batchId, String datasetId, String filename, boolean runSync) throws IOException
+    {
         System.out.println("UPLOADING FILE: " + filename);
 
-        try {
+        try
+        {
             long fileSize = getFileSize(filename);
             System.out.println("FILE SIZE: " + fileSize);
 
@@ -62,29 +65,36 @@ public class Ingestor implements IngestorInterface {
 
                 boolean success = true;
                 List<String> splitFiles = splitLargeFile(filename);
-                for (String splitFile : splitFiles) {
+                for (String splitFile : splitFiles)
+                {
                     splitFile = "temp/" + splitFile;
                     success = addSmallFile(authInfo, schema, batchId, datasetId, splitFile, runSync) && success;
                 }
                 return success;
             }
-            else {
+            else
+                {
                 System.out.println("SMALL FILE DETECTED");
                 return addSmallFile(authInfo, schema, batchId, datasetId, filename, runSync);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             return false;
         }
     }
 
-    public List<String> splitLargeFile(String filename) throws Exception {
+    public List<String> splitLargeFile(String filename) throws Exception
+    {
         print("SPLITTING LARGE FILE");
         File tempDir = new File("temp");
-        if (tempDir.exists()) {
+        if (tempDir.exists())
+        {
             deleteDir(tempDir);
         }
-        while (tempDir.exists()) {
+        while (tempDir.exists())
+        {
             Thread.sleep(1000);
         }
         tempDir.mkdir();
@@ -112,10 +122,12 @@ public class Ingestor implements IngestorInterface {
             long objSize = fileSize;
 
             boolean isNextObj = jsonReader.peek().equals(BEGIN_OBJECT);
-            if (isNextObj) {
+            if (isNextObj)
+            {
                 write(",", oStream);
             }
-            else if (!isNextObj){
+            else if (!isNextObj)
+            {
                 endOfFile = true;
                 break;
             }
@@ -132,10 +144,12 @@ public class Ingestor implements IngestorInterface {
                 fileSize = newFile.length();
                 fileHasSpace = fileSize + (objSize * FILE_CHUNK_SIZE) < MAX_FILE_SIZE;
                 isNextObj = jsonReader.peek().equals(BEGIN_OBJECT);
-                if (isNextObj && fileHasSpace) {
+                if (isNextObj && fileHasSpace)
+                {
                     write(",", oStream);
                 }
-                else if (!isNextObj){
+                else if (!isNextObj)
+                {
                     endOfFile = true;
                     break;
                 }
@@ -154,72 +168,90 @@ public class Ingestor implements IngestorInterface {
         return null;
     }
 
-    private boolean streamObject(JsonReader reader, StringBuilder builder) throws Exception {
+    private boolean streamObject(JsonReader reader, StringBuilder builder) throws Exception
+    {
         JsonElement element = null;
-        try {
+        try
+        {
             element = new Gson().fromJson(reader, JsonElement.class);
         }
-        catch (IllegalArgumentException e) {
+        catch (IllegalArgumentException e)
+        {
             return false;
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
-        if (element != null) {
+        if (element != null)
+        {
             builder.append(element.toString());
             return true;
         }
         return false;
     }
 
-    private boolean streamObject(JsonReader reader, FileOutputStream oStream) throws Exception {
+    private boolean streamObject(JsonReader reader, FileOutputStream oStream) throws Exception
+    {
         JsonElement element = null;
-        try {
+        try
+        {
             element = new Gson().fromJson(reader, JsonElement.class);
-            if (element == null) {
+            if (element == null)
+            {
                 return false;
             }
         }
-        catch (IllegalArgumentException e) {
+        catch (IllegalArgumentException e)
+        {
             return false;
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
-        if (element != null) {
+        if (element != null)
+        {
             write(element.toString(), oStream);
         }
         return true;
     }
 
-    private void write(String output, FileOutputStream stream) throws Exception {
+    private void write(String output, FileOutputStream stream) throws Exception
+    {
         stream.write(bytes(output));
     }
 
-    private byte[] bytes(String myString) {
+    private byte[] bytes(String myString)
+    {
         return myString.getBytes();
     }
 
-    private void print(String output) {
+    private void print(String output)
+    {
         System.out.println(output);
     }
 
-    private boolean addSmallFile(AuthInfo authInfo, Schema schema, String batchId, String datasetId, String filename, boolean runSync) throws IOException {
+    private boolean addSmallFile(AuthInfo authInfo, Schema schema, String batchId, String datasetId, String filename, boolean runSync) throws IOException
+    {
         Map<String, String> headers = generateHeaders(authInfo, "application/octet-stream");
         System.out.println("HEADERS: " + headers.toString());
         byte[] fileContents = readFile(filename);
 
         setIsWaiting(runSync);
         Call<Void> call = API.getIngestionService().uploadFileToBatch(headers, batchId, datasetId, filename, fileContents);
-        call.enqueue(new Callback<Void>() {
+        call.enqueue(new Callback<Void>()
+        {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<Void> call, Response<Void> response)
+            {
                 System.out.println("FILE UPLOADED: " + response.toString());
                 setIsWaiting(false);
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t)
+            {
                 System.out.println("Failure. Call:\n" + call.toString() + ",\nThrowable:\n" + t.toString());
                 setIsWaiting(false);
             }
@@ -229,7 +261,8 @@ public class Ingestor implements IngestorInterface {
     }
 
     @Override
-    public void signalBatchComplete(AuthInfo authInfo, String batchId) throws IOException {
+    public void signalBatchComplete(AuthInfo authInfo, String batchId) throws IOException
+    {
         Map<String, String> headers = generateHeaders(authInfo, null);
         Call<Void> finishBatchCall = ingestionService.signalBatchComplete(headers, batchId);
         System.out.println("FINISHING BATCH");
@@ -253,11 +286,13 @@ public class Ingestor implements IngestorInterface {
     }
 
     @Override
-    public void cancelBatch(AuthInfo authInfo, String batchId) throws IOException {
+    public void cancelBatch(AuthInfo authInfo, String batchId) throws IOException
+    {
 
     }
 
-    private Map<String, String> generateHeaders(AuthInfo authInfo, String contentType) {
+    private Map<String, String> generateHeaders(AuthInfo authInfo, String contentType)
+    {
         Map<String, String> headers = new HashMap<>();
         if (contentType != null) {
             headers.put("Content-Type", contentType);
@@ -272,7 +307,8 @@ public class Ingestor implements IngestorInterface {
         return new File(filename).length();
     }
 
-    private byte[] readFile(String filePath) {
+    private byte[] readFile(String filePath)
+    {
         byte[] content = null;
         try {
             content = Files.readAllBytes( Paths.get(filePath) );
@@ -283,12 +319,16 @@ public class Ingestor implements IngestorInterface {
         return content;
     }
 
-    private void awaitResponse() {
-        while (getIsWaiting()) {
-            try {
+    private void awaitResponse()
+    {
+        while (getIsWaiting())
+        {
+            try
+            {
                 Thread.sleep(1000);
             }
-            catch (InterruptedException e) {
+            catch (InterruptedException e)
+            {
                 Thread.currentThread().interrupt();
             }
         }
@@ -302,9 +342,11 @@ public class Ingestor implements IngestorInterface {
         this.isWaiting = isWaiting;
     }
 
-    private void deleteDir(File dir) throws Exception {
+    private void deleteDir(File dir) throws Exception
+    {
         String[] entries = dir.list();
-        for(String s: entries){
+        for(String s: entries)
+        {
             File currentFile = new File(dir.getPath(),s);
             currentFile.delete();
         }

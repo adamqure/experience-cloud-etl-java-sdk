@@ -46,7 +46,8 @@ public class AuthInfo {
 
     public String getAccessToken()
     {
-        return accessToken.getToken();
+        if (accessToken == null) { return null; }
+        else { return accessToken.getToken(); }
     }
 
     public String getRsaKey() {
