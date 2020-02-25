@@ -3,6 +3,9 @@ package ParameterClasses;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * A model class for storing the information for auth tokens
+ */
 public class AuthToken
 {
     @SerializedName("access_token")
