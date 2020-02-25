@@ -9,6 +9,7 @@ import ToolsInterfaces.*;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -151,23 +152,28 @@ public class Importer implements ImporterInterface {
             public void onResponse(Call<AuthToken> call, Response<AuthToken> response)
             {
                 authInfo.addAuthToken(response.body());
-                if(response.body() == null || authInfo.getAccessToken() == null
-                        || authInfo.getAccessToken() == "")
-                {
-                    message[0] = "Error :" + response.message() + " response code: " + response.code();
-                    System.out.println(message[0]);
-                }
-                else
+                if(response.isSuccessful())
                 {
                     System.out.println("EXCHANGED JWT: " + authInfo.getAccessToken());
                     success[0] = true;
+                }
+                else
+                {
+                    message[0] = "Error after HTTP request:" + response.message() + "\nresponse code: " + response.code();
+                    try
+                    {
+                        message[1] = "error message " + response.errorBody().string();
+                    } catch(IOException e) {
+                        e.printStackTrace();
+                        System.out.println("IO Error when attempting to retrieve the error message from failed API call");
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<AuthToken> call, Throwable t)
             {
-                System.out.println("Error when exchanging JWT for Access Token");
+                System.out.println("Network Error when attempting to exchange JWT for Access Token");
             }
         });
         while (authInfo.getAccessToken() != null && authInfo.getAccessToken().equals(""))
