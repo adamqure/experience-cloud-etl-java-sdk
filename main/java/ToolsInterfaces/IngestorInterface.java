@@ -1,5 +1,7 @@
 package ToolsInterfaces;
 
+import Exceptions.InvalidCallException;
+import Exceptions.ParameterException;
 import ParameterClasses.AuthInfo;
 import ParameterClasses.AuthToken;
 import ParameterClasses.Schema;
@@ -11,8 +13,9 @@ import java.io.IOException;
  * All parameters for all methods are interfaces, such that users may define their
  * own implementations for use, while still using the Tools.Importer base class to upload*/
 public interface IngestorInterface {
-    String createBatch(AuthInfo authInfo, String datasetId) throws IOException;
-    boolean addFileToBatch(AuthInfo authInfo, Schema schema, String batchId, String dataSetId, String filename, boolean runSync) throws IOException;
-    void signalBatchComplete(AuthInfo authInfo, String batchId) throws IOException;
-    void cancelBatch(AuthInfo authInfo, String batchId) throws IOException;
+    String createBatch(AuthInfo authInfo, String datasetId) throws IOException, ParameterException, InvalidCallException;
+    boolean addFileToBatch(AuthInfo authInfo, Schema schema, String batchId,
+                           String dataSetId, String filename, boolean runSync) throws ParameterException, InvalidCallException;
+    void signalBatchComplete(AuthInfo authInfo, String batchId) throws IOException, ParameterException, InvalidCallException;
+    void cancelBatch(AuthInfo authInfo, String batchId) throws ParameterException, InvalidCallException;
 }

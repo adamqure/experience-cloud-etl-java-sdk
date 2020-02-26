@@ -338,4 +338,23 @@ class ImporterTest
             Assertions.assertTrue(false);
         }
     }
+
+    @Test
+    void uploadValidSmallFile()
+    {
+        try
+        {
+            testImp.createJwt();
+            testImp.exchangeJwtAuth();
+            Assertions.assertDoesNotThrow(()->{
+                testImp.uploadFileSync("test128.json", null, DataSetID);
+            });
+        }
+        catch (ParameterException | InvalidExchangeException e)
+        {
+            e.printStackTrace();
+            System.out.println("Error in creation and exchange of JWT when attempting valid upload");
+            Assertions.assertTrue(false);
+        }
+    }
 }

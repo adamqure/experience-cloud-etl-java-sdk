@@ -297,4 +297,9 @@ public class Importer implements ImporterInterface {
     public AuthInfo getAuthInfo() {
         return authInfo;
     }
+
+    private void checkAuthInfo(AuthInfo authInfo) throws ParameterException
+    {
+
+    }
 }

@@ -2,6 +2,8 @@ package Tools;
 
 import API.API;
 import API.API.IngestionService;
+import Exceptions.InvalidCallException;
+import Exceptions.ParameterException;
 import Models.CreateBatchBody;
 import ParameterClasses.AuthInfo;
 import ToolsInterfaces.IngestorInterface;
@@ -30,8 +32,13 @@ public class Ingestor implements IngestorInterface {
     boolean isWaiting = false;
 
     @Override
-    public String createBatch(AuthInfo authInfo, String datasetId) throws IOException
+    public String createBatch(AuthInfo authInfo, String datasetId) throws IOException, ParameterException, InvalidCallException
     {
+        checkAuthInfo(authInfo);
+        if(datasetId == null || datasetId == "")
+        {
+            throw new ParameterException("datasetID cannot be null or empty");
+        }
         System.out.println("CREATING BATCH");
         Map<String, String> headers = generateHeaders(authInfo, "application/json");
 
@@ -39,7 +46,8 @@ public class Ingestor implements IngestorInterface {
         Call<JsonElement> call = ingestionService.createBatch(headers, createBatchData);
 
         Response<JsonElement> response = call.execute();
-        if (response.body() != null) {
+        if (response.isSuccessful() && response.body() != null)
+        {
             JsonObject respBody = response.body().getAsJsonObject();
             String batchId = respBody.get("id").toString();
             System.out.println("BATCH ID: " + batchId);
@@ -47,14 +55,31 @@ public class Ingestor implements IngestorInterface {
             batchId = batchId.replace("\"", "");
             return batchId;
         }
-        return null;
+        else
+        {
+            String message = response.errorBody().string();
+            throw new InvalidCallException("Error: " + response.message()+"\ncode: " +response.code()+"\n message: "+message);
+        }
     }
 
     @Override
-    public boolean addFileToBatch(AuthInfo authInfo, Schema schema, String batchId, String datasetId, String filename, boolean runSync) throws IOException
+    public boolean addFileToBatch(AuthInfo authInfo, Schema schema, String batchId,
+                                  String datasetId, String filename, boolean runSync) throws ParameterException, InvalidCallException
     {
+        checkAuthInfo(authInfo);
+        if(batchId == null || batchId == "")
+        {
+            throw new ParameterException("Batch ID cannot be null or empty");
+        }
+        if(filename == null || filename == "")
+        {
+            throw new ParameterException("Filename cannot be null or empty");
+        }
+        if(datasetId == null || datasetId == "")
+        {
+            throw new ParameterException("DataSet ID cannot be null or empty");
+        }
         System.out.println("UPLOADING FILE: " + filename);
-
         try
         {
             long fileSize = getFileSize(filename);
@@ -261,12 +286,34 @@ public class Ingestor implements IngestorInterface {
     }
 
     @Override
-    public void signalBatchComplete(AuthInfo authInfo, String batchId) throws IOException
+    public void signalBatchComplete(AuthInfo authInfo, String batchId) throws IOException, ParameterException, InvalidCallException
     {
+        if(batchId == null || batchId == "")
+        {
+            throw new ParameterException("batchID cannot be null or empty");
+        }
+        if(authInfo.getAccessToken() == null || authInfo.getAccessToken() == "")
+        {
+            throw new ParameterException("access Token cannot be null or an empty string");
+        }
+        if(authInfo.getApiKey() == null || authInfo.getApiKey() == "")
+        {
+            throw new ParameterException("API key cannot be null or empty");
+        }
+        if(authInfo.getImsOrgId() == null || authInfo.getImsOrgId() == "")
+        {
+            throw new ParameterException("IMS Org ID cannot be null or empty");
+        }
         Map<String, String> headers = generateHeaders(authInfo, null);
         Call<Void> finishBatchCall = ingestionService.signalBatchComplete(headers, batchId);
         System.out.println("FINISHING BATCH");
         Response<Void> finishBatchResponse = finishBatchCall.execute();
+        if(!finishBatchResponse.isSuccessful())
+        {
+            String message = finishBatchResponse.errorBody().string();
+            System.out.println(message);
+            throw new InvalidCallException(finishBatchResponse.message() + "\nCode" + finishBatchResponse.code() + "\n" + message);
+        }
         System.out.println("BATCH FINISHED: " + finishBatchResponse.toString());
 //        setIsWaiting(true);
 //        finishBatchCall.enqueue(new Callback<Void>() {
@@ -286,9 +333,13 @@ public class Ingestor implements IngestorInterface {
     }
 
     @Override
-    public void cancelBatch(AuthInfo authInfo, String batchId) throws IOException
+    public void cancelBatch(AuthInfo authInfo, String batchId) throws ParameterException, InvalidCallException
     {
-
+        checkAuthInfo(authInfo);
+        if(batchId == null || batchId == "")
+        {
+            throw new ParameterException("BatchID cannot be null or empty");
+        }
     }
 
     private Map<String, String> generateHeaders(AuthInfo authInfo, String contentType)
@@ -331,6 +382,26 @@ public class Ingestor implements IngestorInterface {
             {
                 Thread.currentThread().interrupt();
             }
+        }
+    }
+
+    private void checkAuthInfo(AuthInfo authInfo) throws ParameterException
+    {
+        if(authInfo == null)
+        {
+            throw new ParameterException("AuthInfo object cannot be null when attempting API operations");
+        }
+        if(authInfo.getApiKey() == null || authInfo.getApiKey() == "")
+        {
+            throw new ParameterException("API Key cannot be null or empty");
+        }
+        if(authInfo.getImsOrgId() == null || authInfo.getImsOrgId() == "")
+        {
+            throw new ParameterException("IMS Org ID cannot be null or empty");
+        }
+        if(authInfo.getAccessToken() == null || authInfo.getAccessToken() == "")
+        {
+            throw new ParameterException("Access Token cannot be null or empty");
         }
     }
 

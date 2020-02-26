@@ -27,6 +27,9 @@ class IngestorTest
             "3hXEbZWkr9Ta1BezbjTvSnpgtYbNFAs4M2mYnVHpzqCgJQxI41JzQKHAqj94_dHNJIWvHJERnME1L9dX0DHSmFSTSZVwOUZWT7HFdZg-2wP" +
             "TG4wY3VRVmiwVmmW3lQAJ5aL6N7O1rWUqEEb9tXHM9UJSKeFTdlsmyAX_MV9TK9-zB5kDpkhMK41rQiwUVWzCkB1gawJPutweGv5GiUieOO" +
             "lwLz0GfD5oH5aoA8FYXt9_hFziQPP55yVoxbYWuOPFMiqRBWmL_zbne8D4Kn7Uwg86399989";
+    String test128 = "test128.json";
+    String test256 = "test256.json";
+    String test500 = "test500.json";
     @BeforeEach
     void setUp()
     {
@@ -70,7 +73,7 @@ class IngestorTest
 
     //Test creating a batch with a null in API key
     @Test
-    void createBatchNullAPI()
+    void createBatchNullAPIKey()
     {
         testAuth.setApiKey(null);
         Assertions.assertThrows(ParameterException.class, ()->{
@@ -151,7 +154,7 @@ class IngestorTest
                 testIng.addFileToBatch(testAuth, null, batchID, DataSetID, "", true);
             });
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
             System.out.println("Error in createBatch while testing UploadFileEmptyFilename");
@@ -171,7 +174,7 @@ class IngestorTest
                 testIng.addFileToBatch(testAuth, null, batchID, DataSetID, null, true);
             });
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
             System.out.println("Error in createBatch while testing UploadFileNullFilename");
@@ -199,6 +202,23 @@ class IngestorTest
         });
     }
 
+    @Test
+    void uploadValidFileSync()
+    {
+        try
+        {
+            String batchID = testIng.createBatch(testAuth, DataSetID);
+            Assertions.assertDoesNotThrow(()->{
+                testIng.addFileToBatch(testAuth, null, batchID, DataSetID, test128, true);
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("Error when creating batch for valid file upload test");
+            Assertions.assertTrue(false);
+        }
+    }
 /** SECTION, CANCEL BATCH TESTS */
     @Test
     void cancelBatchEmptyAuthInfo()
@@ -212,7 +232,7 @@ class IngestorTest
                 testIng.cancelBatch(testAuth, batchID);
             });
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
             System.out.println("Error in createBatch while testing CancelBatchEmptyAuthInfo");
@@ -232,7 +252,7 @@ class IngestorTest
                 testIng.cancelBatch(testAuth, batchID);
             });
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
             System.out.println("Error in createBatch while testing CancelBatchNullAuthInfo");
