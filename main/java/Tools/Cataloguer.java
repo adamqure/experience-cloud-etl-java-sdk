@@ -17,6 +17,7 @@ import java.util.Map;
 /**
  * Basic Cataloguer that implements the Cataloguer Interface
  */
+//TODO write test cases for Cataloguer methods
 public class Cataloguer implements CataloguerInterface
 {
     @Override

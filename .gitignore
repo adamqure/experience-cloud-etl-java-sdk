@@ -31,8 +31,8 @@ config.json
 
 #Test Files
 test128.json
-test100MB.json
-test500MB.json
+test256.json
+test500.json
 test.json
 
 # Temp files
