@@ -22,11 +22,12 @@
 #Mac Inserted Files
 *.DS_Store
 
-#Config File
+# Config Files
 main/Config.xml
 config.json
-.idea
+.idea/
 *.iml
+*.xml
 
 #Test Files
 test128.json

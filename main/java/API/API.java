@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * Abstract API.API class to be used with the API.API calls
+ * Abstract API class which provides static methods for making API calls
  */
 public abstract class API {
 

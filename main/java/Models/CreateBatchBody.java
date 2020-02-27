@@ -3,6 +3,9 @@ package Models;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A model class for storing the information required for creating a batch
+ */
 public class CreateBatchBody {
 
     private String datasetId;

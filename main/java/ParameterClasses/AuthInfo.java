@@ -2,6 +2,9 @@ package ParameterClasses;
 
 import com.google.gson.annotations.*;
 
+/**
+ * A model class for storing the auth header information to be used in making requests
+ */
 public class AuthInfo {
     protected String username;
     protected String password;
