@@ -24,6 +24,9 @@ class ImporterTest
             "lwLz0GfD5oH5aoA8FYXt9_hFziQPP55yVoxbYWuOPFMiqRBWmL_zbne8D4Kn7Uwg86399989";
     String invalidToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0" +
             "IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    String test128 = "test100MB.json";
+    String test256 = "test256.json";
+    String test500 = "test500MB.json";
     @BeforeEach
     void setUp()
     {
@@ -328,7 +331,7 @@ class ImporterTest
             testImp.exchangeJwtAuth();
             Assertions.assertThrows(ParameterException.class, () ->
             {
-                testImp.uploadFile("test128.json", null, null);
+                testImp.uploadFile(test128, null, null);
             });
         }
         catch (ParameterException | InvalidExchangeException e)
@@ -347,7 +350,7 @@ class ImporterTest
             testImp.createJwt();
             testImp.exchangeJwtAuth();
             Assertions.assertDoesNotThrow(()->{
-                testImp.uploadFileSync("test128.json", null, DataSetID);
+                testImp.uploadFileSync(test128, null, DataSetID);
             });
         }
         catch (ParameterException | InvalidExchangeException e)

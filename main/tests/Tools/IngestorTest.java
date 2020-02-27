@@ -27,9 +27,9 @@ class IngestorTest
             "3hXEbZWkr9Ta1BezbjTvSnpgtYbNFAs4M2mYnVHpzqCgJQxI41JzQKHAqj94_dHNJIWvHJERnME1L9dX0DHSmFSTSZVwOUZWT7HFdZg-2wP" +
             "TG4wY3VRVmiwVmmW3lQAJ5aL6N7O1rWUqEEb9tXHM9UJSKeFTdlsmyAX_MV9TK9-zB5kDpkhMK41rQiwUVWzCkB1gawJPutweGv5GiUieOO" +
             "lwLz0GfD5oH5aoA8FYXt9_hFziQPP55yVoxbYWuOPFMiqRBWmL_zbne8D4Kn7Uwg86399989";
-    String test128 = "test128.json";
+    String test128 = "test100MB.json";
     String test256 = "test256.json";
-    String test500 = "test500.json";
+    String test500 = "test500MB.json";
     @BeforeEach
     void setUp()
     {
