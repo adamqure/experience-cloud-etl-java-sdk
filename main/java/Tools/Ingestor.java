@@ -5,7 +5,6 @@ import API.API.IngestionService;
 import Models.CreateBatchBody;
 import ParameterClasses.AuthInfo;
 import ToolsInterfaces.IngestorInterface;
-import ParameterClasses.Schema;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,17 +55,32 @@ public class Ingestor implements IngestorInterface {
     }
 
     /**
-     * Adds a file to an existing batch for upload
+     * Adds a file synchronously to an existing batch for upload
      * @param authInfo contains auth header information for request
-     * @param schema is the schema for the file being uploaded (must match target dataset schema)
      * @param batchId is the id of the batch the file is to be added to
      * @param datasetId is the id of the dataset the file is to be uploaded to
      * @param filename is the name of the file to be uploaded
-     * @param runSync determines whether or not the file should be added synchronously
      * @return true if file is added successfully, otherwise false
      */
     @Override
-    public boolean addFileToBatch(AuthInfo authInfo, Schema schema, String batchId, String datasetId, String filename, boolean runSync) throws IOException {
+    public boolean addFileToBatchSync(AuthInfo authInfo, String batchId, String datasetId, String filename) {
+        return addFileToBatch(authInfo, batchId, datasetId, filename, true);
+    }
+
+    /**
+     * Adds a file asynchronously to an existing batch for upload
+     * @param authInfo contains auth header information for request
+     * @param batchId is the id of the batch the file is to be added to
+     * @param datasetId is the id of the dataset the file is to be uploaded to
+     * @param filename is the name of the file to be uploaded
+     * @return true if file is added successfully, otherwise false
+     */
+    @Override
+    public boolean addFileToBatch(AuthInfo authInfo, String batchId, String datasetId, String filename) {
+        return addFileToBatch(authInfo, batchId, datasetId, filename, false);
+    }
+
+    private boolean addFileToBatch(AuthInfo authInfo, String batchId, String datasetId, String filename, boolean runSync) {
         System.out.println("UPLOADING FILE: " + filename);
 
         try {
@@ -80,13 +94,13 @@ public class Ingestor implements IngestorInterface {
                 List<String> splitFiles = splitLargeFile(filename);
                 for (String splitFile : splitFiles) {
                     splitFile = "temp/" + splitFile;
-                    success = addSmallFile(authInfo, schema, batchId, datasetId, splitFile, runSync) && success;
+                    success = addSmallFile(authInfo, batchId, datasetId, splitFile, runSync) && success;
                 }
                 return success;
             }
             else {
                 System.out.println("SMALL FILE DETECTED");
-                return addSmallFile(authInfo, schema, batchId, datasetId, filename, runSync);
+                return addSmallFile(authInfo, batchId, datasetId, filename, runSync);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -136,8 +150,7 @@ public class Ingestor implements IngestorInterface {
             if (isNextObj) {
                 write(",", oStream);
             }
-            else if (!isNextObj){
-                endOfFile = true;
+            else {
                 break;
             }
 
@@ -175,7 +188,7 @@ public class Ingestor implements IngestorInterface {
         return null;
     }
 
-    private boolean streamObject(JsonReader reader, StringBuilder builder) throws Exception {
+    private boolean streamObject(JsonReader reader, StringBuilder builder) {
         JsonElement element = null;
         try {
             element = new Gson().fromJson(reader, JsonElement.class);
@@ -225,7 +238,7 @@ public class Ingestor implements IngestorInterface {
         System.out.println(output);
     }
 
-    private boolean addSmallFile(AuthInfo authInfo, Schema schema, String batchId, String datasetId, String filename, boolean runSync) throws IOException {
+    private boolean addSmallFile(AuthInfo authInfo, String batchId, String datasetId, String filename, boolean runSync) {
         Map<String, String> headers = generateHeaders(authInfo, "application/octet-stream");
         System.out.println("HEADERS: " + headers.toString());
         byte[] fileContents = readFile(filename);
@@ -261,29 +274,6 @@ public class Ingestor implements IngestorInterface {
         System.out.println("FINISHING BATCH");
         Response<Void> finishBatchResponse = finishBatchCall.execute();
         System.out.println("BATCH FINISHED: " + finishBatchResponse.toString());
-//        setIsWaiting(true);
-//        finishBatchCall.enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                System.out.println("BATCH FINISHED: " + response.toString());
-//                setIsWaiting(false);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                System.out.println("Failure. Call:\n" + call.toString() + ",\nThrowable:\n" + t.toString());
-//                setIsWaiting(false);
-//            }
-//        });
-//        awaitResponse();
-    }
-
-    /**
-     * Cancels an existing batch upload
-     */
-    @Override
-    public void cancelBatch(AuthInfo authInfo, String batchId) throws IOException {
-
     }
 
     private Map<String, String> generateHeaders(AuthInfo authInfo, String contentType) {
@@ -331,8 +321,10 @@ public class Ingestor implements IngestorInterface {
         this.isWaiting = isWaiting;
     }
 
-    private void deleteDir(File dir) throws Exception {
+    private void deleteDir(File dir) {
         String[] entries = dir.list();
+        if (entries == null) return;
+
         for(String s: entries){
             File currentFile = new File(dir.getPath(),s);
             currentFile.delete();

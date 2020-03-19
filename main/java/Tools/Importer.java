@@ -70,7 +70,7 @@ public class Importer implements ImporterInterface {
         }
         catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            System.out.println("Some error occured when attempting to get the Key factory for the RSAPrivateKey");
+            System.out.println("Some error occurred when attempting to get the Key factory for the RSAPrivateKey");
         }
         catch (InvalidKeySpecException e) {
             e.printStackTrace();
@@ -78,7 +78,6 @@ public class Importer implements ImporterInterface {
                     "config file and RSA key");
         }
         if (privKey == null) {
-            //TODO Set proper error handling in the case that we get to here without a proper Key
             System.out.println("Something went wrong in the creation of the JSON Web Token (JWT) Most likely problem is" +
                     "a config file not formatted correctly or an incorrect RSA key formatting");
         }
@@ -135,7 +134,7 @@ public class Importer implements ImporterInterface {
      */
     public String uploadFile(String filename, Schema schema, String datasetId) {
         String batchId = createBatch(datasetId);
-        addFileToBatch(batchId, datasetId, filename, false);
+        addFileToBatch(batchId, datasetId, filename);
         closeBatch(batchId);
         return batchId;
     }
@@ -150,7 +149,7 @@ public class Importer implements ImporterInterface {
      */
     public String uploadFileSync(String filename, Schema schema, String datasetId) {
         String batchId = createBatch(datasetId);
-        addFileToBatch(batchId, datasetId, filename, true);
+        addFileToBatchSync(batchId, datasetId, filename);
         closeBatch(batchId);
         return batchId;
     }
@@ -175,11 +174,25 @@ public class Importer implements ImporterInterface {
      * @param batchId is the id of the batch the file is to be added to.
      * @param datasetId is the id of the dataset the file is to be uploaded to.
      * @param filename is the path of the file to be uploaded.
-     * @param runSync is whether or not the file should be added synchronously.
      */
-    public void addFileToBatch(String batchId, String datasetId, String filename, boolean runSync) {
+    public void addFileToBatch(String batchId, String datasetId, String filename) {
         try {
-            ingestor.addFileToBatch(authInfo, null, batchId, datasetId, filename, runSync);
+            ingestor.addFileToBatch(authInfo, batchId, datasetId, filename);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Adds a file synchronously to an existing batch to be uploaded
+     * @param batchId is the id of the batch the file is to be added to.
+     * @param datasetId is the id of the dataset the file is to be uploaded to.
+     * @param filename is the path of the file to be uploaded.
+     */
+    public void addFileToBatchSync(String batchId, String datasetId, String filename) {
+        try {
+            ingestor.addFileToBatchSync(authInfo, batchId, datasetId, filename);
         }
         catch(Exception e) {
             e.printStackTrace();
