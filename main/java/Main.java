@@ -12,15 +12,16 @@ public class Main {
 //        System.out.println("FILES GENERATED: " + files.toString());
 
         Importer importer = new Importer();
-//        importer.uploadFileSync("test128.json", null, datasetId);
+        String batchId = importer.uploadFileSync("test100MB.json", datasetId);
+        importer.getBatchStatus(batchId);
 
 //        String batchId = importer.createBatch(datasetId);
-//        importer.addFileToBatch(batchId, datasetId,"test500MB.json", true);
+//        importer.addFileToBatchSync(batchId, datasetId,"test500MB.json");
 //        importer.getBatchStatus(batchId);
 //        importer.closeBatch(batchId);
 //        importer.getBatchStatus(batchId);
 
-        importer.closeBatch("6752b8b0-492a-11ea-886c-7385a96b2ac2");
-        importer.getBatchStatus("6752b8b0-492a-11ea-886c-7385a96b2ac2");
+//        importer.closeBatch("6752b8b0-492a-11ea-886c-7385a96b2ac2");
+//        importer.getBatchStatus("6752b8b0-492a-11ea-886c-7385a96b2ac2");
     }
 }

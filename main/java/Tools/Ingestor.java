@@ -7,7 +7,6 @@ import Exceptions.ParameterException;
 import Models.CreateBatchBody;
 import ParameterClasses.AuthInfo;
 import ToolsInterfaces.IngestorInterface;
-import ParameterClasses.Schema;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -69,19 +68,32 @@ public class Ingestor implements IngestorInterface {
     }
 
     /**
-     * Adds a file to an existing batch for upload
+     * Adds a file synchronously to an existing batch for upload
      * @param authInfo contains auth header information for request
-     * @param schema is the schema for the file being uploaded (must match target dataset schema)
      * @param batchId is the id of the batch the file is to be added to
      * @param datasetId is the id of the dataset the file is to be uploaded to
      * @param filename is the name of the file to be uploaded
-     * @param runSync determines whether or not the file should be added synchronously
      * @return true if file is added successfully, otherwise false
      */
     @Override
-    public boolean addFileToBatch(AuthInfo authInfo, Schema schema, String batchId,
-                                  String datasetId, String filename, boolean runSync) throws ParameterException, InvalidCallException
-    {
+    public boolean addFileToBatchSync(AuthInfo authInfo, String batchId, String datasetId, String filename) {
+        return addFileToBatch(authInfo, batchId, datasetId, filename, true);
+    }
+
+    /**
+     * Adds a file asynchronously to an existing batch for upload
+     * @param authInfo contains auth header information for request
+     * @param batchId is the id of the batch the file is to be added to
+     * @param datasetId is the id of the dataset the file is to be uploaded to
+     * @param filename is the name of the file to be uploaded
+     * @return true if file is added successfully, otherwise false
+     */
+    @Override
+    public boolean addFileToBatch(AuthInfo authInfo, String batchId, String datasetId, String filename) {
+        return addFileToBatch(authInfo, batchId, datasetId, filename, false);
+    }
+
+    private boolean addFileToBatch(AuthInfo authInfo, String batchId, String datasetId, String filename, boolean runSync) throws ParameterException, InvalidCallException {
         checkAuthInfo(authInfo);
         if(batchId == null || batchId == "")
         {
@@ -109,14 +121,14 @@ public class Ingestor implements IngestorInterface {
                 for (String splitFile : splitFiles)
                 {
                     splitFile = "temp/" + splitFile;
-                    success = addSmallFile(authInfo, schema, batchId, datasetId, splitFile, runSync) && success;
+                    success = addSmallFile(authInfo, batchId, datasetId, splitFile, runSync) && success;
                 }
                 return success;
             }
             else
                 {
                 System.out.println("SMALL FILE DETECTED");
-                return addSmallFile(authInfo, schema, batchId, datasetId, filename, runSync);
+                return addSmallFile(authInfo, batchId, datasetId, filename, runSync);
             }
         }
         catch (Exception e)
@@ -171,9 +183,7 @@ public class Ingestor implements IngestorInterface {
             {
                 write(",", oStream);
             }
-            else if (!isNextObj)
-            {
-                endOfFile = true;
+            else {
                 break;
             }
 
@@ -213,90 +223,72 @@ public class Ingestor implements IngestorInterface {
         return null;
     }
 
-    private boolean streamObject(JsonReader reader, StringBuilder builder) throws Exception
-    {
+    private boolean streamObject(JsonReader reader, StringBuilder builder) throws Exception {
         JsonElement element = null;
-        try
-        {
+        try {
             element = new Gson().fromJson(reader, JsonElement.class);
         }
-        catch (IllegalArgumentException e)
-        {
+        catch (IllegalArgumentException e) {
             return false;
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
-        if (element != null)
-        {
+        if (element != null) {
             builder.append(element.toString());
             return true;
         }
         return false;
     }
 
-    private boolean streamObject(JsonReader reader, FileOutputStream oStream) throws Exception
-    {
+    private boolean streamObject(JsonReader reader, FileOutputStream oStream) throws Exception {
         JsonElement element = null;
-        try
-        {
+        try {
             element = new Gson().fromJson(reader, JsonElement.class);
-            if (element == null)
-            {
+            if (element == null) {
                 return false;
             }
         }
-        catch (IllegalArgumentException e)
-        {
+        catch (IllegalArgumentException e) {
             return false;
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
-        if (element != null)
-        {
+        if (element != null) {
             write(element.toString(), oStream);
         }
         return true;
     }
 
-    private void write(String output, FileOutputStream stream) throws Exception
-    {
+    private void write(String output, FileOutputStream stream) throws Exception {
         stream.write(bytes(output));
     }
 
-    private byte[] bytes(String myString)
-    {
+    private byte[] bytes(String myString) {
         return myString.getBytes();
     }
 
-    private void print(String output)
-    {
+    private void print(String output) {
         System.out.println(output);
     }
 
-    private boolean addSmallFile(AuthInfo authInfo, Schema schema, String batchId, String datasetId, String filename, boolean runSync) throws IOException
-    {
+    private boolean addSmallFile(AuthInfo authInfo, String batchId, String datasetId, String filename, boolean runSync) throws IOException {
         Map<String, String> headers = generateHeaders(authInfo, "application/octet-stream");
         System.out.println("HEADERS: " + headers.toString());
         byte[] fileContents = readFile(filename);
 
         setIsWaiting(runSync);
         Call<Void> call = API.getIngestionService().uploadFileToBatch(headers, batchId, datasetId, filename, fileContents);
-        call.enqueue(new Callback<Void>()
-        {
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response)
-            {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 System.out.println("FILE UPLOADED: " + response.toString());
                 setIsWaiting(false);
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t)
-            {
+            public void onFailure(Call<Void> call, Throwable t) {
                 System.out.println("Failure. Call:\n" + call.toString() + ",\nThrowable:\n" + t.toString());
                 setIsWaiting(false);
             }
@@ -340,38 +332,9 @@ public class Ingestor implements IngestorInterface {
             throw new InvalidCallException(finishBatchResponse.message() + "\nCode" + finishBatchResponse.code() + "\n" + message);
         }
         System.out.println("BATCH FINISHED: " + finishBatchResponse.toString());
-//        setIsWaiting(true);
-//        finishBatchCall.enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                System.out.println("BATCH FINISHED: " + response.toString());
-//                setIsWaiting(false);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                System.out.println("Failure. Call:\n" + call.toString() + ",\nThrowable:\n" + t.toString());
-//                setIsWaiting(false);
-//            }
-//        });
-//        awaitResponse();
     }
 
-    /**
-     * Cancels an existing batch upload
-     */
-    @Override
-    public void cancelBatch(AuthInfo authInfo, String batchId) throws ParameterException, InvalidCallException
-    {
-        checkAuthInfo(authInfo);
-        if(batchId == null || batchId == "")
-        {
-            throw new ParameterException("BatchID cannot be null or empty");
-        }
-    }
-
-    private Map<String, String> generateHeaders(AuthInfo authInfo, String contentType)
-    {
+    private Map<String, String> generateHeaders(AuthInfo authInfo, String contentType) {
         Map<String, String> headers = new HashMap<>();
         if (contentType != null) {
             headers.put("Content-Type", contentType);
@@ -386,8 +349,7 @@ public class Ingestor implements IngestorInterface {
         return new File(filename).length();
     }
 
-    private byte[] readFile(String filePath)
-    {
+    private byte[] readFile(String filePath) {
         byte[] content = null;
         try {
             content = Files.readAllBytes( Paths.get(filePath) );
@@ -398,37 +360,28 @@ public class Ingestor implements IngestorInterface {
         return content;
     }
 
-    private void awaitResponse()
-    {
-        while (getIsWaiting())
-        {
-            try
-            {
+    private void awaitResponse() {
+        while (getIsWaiting()) {
+            try {
                 Thread.sleep(1000);
             }
-            catch (InterruptedException e)
-            {
+            catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
     }
 
-    private void checkAuthInfo(AuthInfo authInfo) throws ParameterException
-    {
-        if(authInfo == null)
-        {
+    private void checkAuthInfo(AuthInfo authInfo) throws ParameterException {
+        if (authInfo == null) {
             throw new ParameterException("AuthInfo object cannot be null when attempting API operations");
         }
-        if(authInfo.getApiKey() == null || authInfo.getApiKey() == "")
-        {
+        if (authInfo.getApiKey() == null || authInfo.getApiKey() == "") {
             throw new ParameterException("API Key cannot be null or empty");
         }
-        if(authInfo.getImsOrgId() == null || authInfo.getImsOrgId() == "")
-        {
+        if (authInfo.getImsOrgId() == null || authInfo.getImsOrgId() == "") {
             throw new ParameterException("IMS Org ID cannot be null or empty");
         }
-        if(authInfo.getAccessToken() == null || authInfo.getAccessToken() == "")
-        {
+        if (authInfo.getAccessToken() == null || authInfo.getAccessToken() == "") {
             throw new ParameterException("Access Token cannot be null or empty");
         }
     }
@@ -441,11 +394,11 @@ public class Ingestor implements IngestorInterface {
         this.isWaiting = isWaiting;
     }
 
-    private void deleteDir(File dir) throws Exception
-    {
+    private void deleteDir(File dir) {
         String[] entries = dir.list();
-        for(String s: entries)
-        {
+        if (entries == null) return;
+
+        for(String s: entries){
             File currentFile = new File(dir.getPath(),s);
             currentFile.delete();
         }

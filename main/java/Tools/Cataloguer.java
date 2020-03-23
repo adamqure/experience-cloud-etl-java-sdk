@@ -10,7 +10,6 @@ import com.google.gson.JsonPrimitive;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class Cataloguer implements CataloguerInterface
     @Override
     public String getBatchStatus(AuthInfo authInfo, String batchId){
         System.out.println("GETTING BATCH STATUS");
-        Map<String, String> headers = generateHeaders(authInfo, null);
+        Map<String, String> headers = generateHeaders(authInfo);
 
         Call<JsonElement> call = API.getCatalogService().getUploadStatus(headers, batchId);
 //        System.out.println(headers);
@@ -74,11 +73,8 @@ public class Cataloguer implements CataloguerInterface
 
     }
 
-    private Map<String, String> generateHeaders(AuthInfo authInfo, String contentType) {
+    private Map<String, String> generateHeaders(AuthInfo authInfo) {
         Map<String, String> headers = new HashMap<>();
-        if (contentType != null) {
-            headers.put("Content-Type", contentType);
-        }
         headers.put("x-gw-ims-org-id", authInfo.getImsOrgId());
         headers.put("Authorization", "Bearer " + authInfo.getAccessToken());
         headers.put("x-api-key", authInfo.getApiKey());
