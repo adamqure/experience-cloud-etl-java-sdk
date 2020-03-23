@@ -1,7 +1,7 @@
 package Tools;
 
-import ParameterClasses.AuthInfo;
-import ParameterClasses.Schema;
+//import ParameterClasses.AuthInfo;
+import ParameterClasses.*;
 import ToolsInterfaces.ValidatorInterface;
 
 /**
@@ -10,7 +10,7 @@ import ToolsInterfaces.ValidatorInterface;
 public class Validator implements ValidatorInterface {
 
     @Override
-    public void validateSchema(Schema schema, String dataSetId, AuthInfo authInfo) {
+    public void validateSchema(String dataSetId, AuthInfo authInfo) {
 
     }
     @Override
