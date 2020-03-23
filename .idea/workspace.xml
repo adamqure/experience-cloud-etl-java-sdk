@@ -13,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main/java/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
-              <caret line="11" column="33" lean-forward="true" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
+              <caret line="11" column="33" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -28,8 +28,8 @@
       <file leaf-file-name="Importer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main/java/Tools/Importer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-846">
-              <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
+            <state relative-caret-position="561">
+              <caret line="52" selection-start-line="52" selection-end-line="52" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#createJwt#0;class#Importer#0" />
@@ -42,8 +42,8 @@
       <file leaf-file-name="API.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main/java/API/API.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="101" lean-forward="true" selection-start-line="101" selection-end-line="101" />
+            <state relative-caret-position="1513">
+              <caret line="101" selection-start-line="101" selection-end-line="101" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -54,8 +54,29 @@
       <file leaf-file-name="ImporterInterface.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main/java/ToolsInterfaces/ImporterInterface.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
+            <state relative-caret-position="34">
+              <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Validator.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/main/java/Tools/Validator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="14" column="5" lean-forward="true" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Schema.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main/java/ParameterClasses/Schema.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" selection-start-line="7" selection-end-line="7" />
             </state>
           </provider>
         </entry>
@@ -63,26 +84,16 @@
       <file leaf-file-name="Ingestor.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main/java/Tools/Ingestor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2057">
-              <caret line="121" column="34" lean-forward="true" selection-start-line="121" selection-start-column="34" selection-end-line="121" selection-end-column="34" />
+            <state relative-caret-position="1751">
+              <caret line="121" column="34" selection-start-line="121" selection-start-column="34" selection-end-line="121" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#streamObject#0;class#Ingestor#0" />
                 <element signature="method#streamObject#1;class#Ingestor#0" />
                 <element signature="method#write#0;class#Ingestor#0" />
-                <element signature="e#8096#8097#0" expanded="true" />
-                <element signature="e#8138#8139#0" expanded="true" />
-                <element signature="e#8179#8180#0" expanded="true" />
-                <element signature="e#8221#8222#0" expanded="true" />
                 <element signature="method#generateHeaders#0;class#Ingestor#0" />
-                <element signature="e#10506#10507#0" expanded="true" />
-                <element signature="e#10556#10557#0" expanded="true" />
                 <element signature="method#readFile#0;class#Ingestor#0" />
                 <element signature="method#awaitResponse#0;class#Ingestor#0" />
-                <element signature="e#11131#11132#0" expanded="true" />
-                <element signature="e#11168#11169#0" expanded="true" />
-                <element signature="e#11220#11221#0" expanded="true" />
-                <element signature="e#11262#11263#0" expanded="true" />
                 <element signature="method#deleteDir#0;class#Ingestor#0" />
               </folding>
             </state>
@@ -92,8 +103,8 @@
       <file leaf-file-name="IngestorInterface.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main/java/ToolsInterfaces/IngestorInterface.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+            <state relative-caret-position="255">
+              <caret line="17" selection-start-line="17" selection-end-line="17" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -104,7 +115,7 @@
       <file leaf-file-name="CreateBatchBody.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main/java/Models/CreateBatchBody.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
+            <state relative-caret-position="323">
               <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -116,8 +127,8 @@
       <file leaf-file-name="Cataloguer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main/java/Tools/Cataloguer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-409">
-              <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+            <state relative-caret-position="221">
+              <caret line="24" selection-start-line="24" selection-end-line="24" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -180,12 +191,12 @@
         <option value="$PROJECT_DIR$/main/java/API/API.java" />
         <option value="$PROJECT_DIR$/main/java/ParameterClasses/AuthToken.java" />
         <option value="$PROJECT_DIR$/main/java/Models/CreateBatchBody.java" />
-        <option value="$PROJECT_DIR$/main/java/ToolsInterfaces/ImporterInterface.java" />
         <option value="$PROJECT_DIR$/main/java/Tools/Importer.java" />
         <option value="$PROJECT_DIR$/main/java/Tools/Ingestor.java" />
         <option value="$PROJECT_DIR$/main/java/Tools/Cataloguer.java" />
         <option value="$PROJECT_DIR$/main/java/ToolsInterfaces/IngestorInterface.java" />
         <option value="$PROJECT_DIR$/main/java/Main.java" />
+        <option value="$PROJECT_DIR$/main/java/ToolsInterfaces/ImporterInterface.java" />
       </list>
     </option>
   </component>
@@ -220,6 +231,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -258,13 +270,19 @@
               <item name="experience-cloud-etl-java-sdk" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="ParameterClasses" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="experience-cloud-etl-java-sdk" type="b2602c69:ProjectViewProjectNode" />
+              <item name="experience-cloud-etl-java-sdk" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="ToolsInterfaces" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -429,7 +447,8 @@
       <workItem from="1582312644887" duration="3504000" />
       <workItem from="1582820913142" duration="612000" />
       <workItem from="1584042500642" duration="289000" />
-      <workItem from="1584646694595" duration="5253000" />
+      <workItem from="1584646694595" duration="6242000" />
+      <workItem from="1584989759071" duration="323000" />
     </task>
     <servers />
   </component>
@@ -445,7 +464,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="98535000" />
+    <option name="totallyTimeSpent" value="99847000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -453,7 +472,6 @@
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info active="true" anchor="bottom" id="Messages" order="7" visible="true" weight="0.32763532" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
@@ -465,7 +483,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.4966443" weight="0.2905983" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17315437" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17516778" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -479,6 +497,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32905984" />
+      <window_info anchor="bottom" id="Messages" order="7" visible="true" weight="0.32763532" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -711,13 +730,6 @@ reader.beginArray();</expression-string>
     <entry file="file://$PROJECT_DIR$/main/java/ParameterClasses/Abstracts/AuthTokenInterface.java" />
     <entry file="file://$PROJECT_DIR$/main/java/ParameterClasses/Classes/DataSetID.java" />
     <entry file="file://$PROJECT_DIR$/main/java/ParameterClasses/Abstracts/SchemaInterface.java" />
-    <entry file="file://$PROJECT_DIR$/main/java/Tools/Validator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="9" column="53" selection-start-line="9" selection-start-column="53" selection-end-line="9" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main/java/ToolsInterfaces/ValidatorInterface.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -784,13 +796,6 @@ reader.beginArray();</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/java/ParameterClasses/Schema.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main/java/ParameterClasses/AuthToken.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -815,35 +820,18 @@ reader.beginArray();</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main/java/ToolsInterfaces/ImporterInterface.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main/java/Tools/Ingestor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2057">
-          <caret line="121" column="34" lean-forward="true" selection-start-line="121" selection-start-column="34" selection-end-line="121" selection-end-column="34" />
+        <state relative-caret-position="1751">
+          <caret line="121" column="34" selection-start-line="121" selection-start-column="34" selection-end-line="121" selection-end-column="34" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#streamObject#0;class#Ingestor#0" />
             <element signature="method#streamObject#1;class#Ingestor#0" />
             <element signature="method#write#0;class#Ingestor#0" />
-            <element signature="e#8096#8097#0" expanded="true" />
-            <element signature="e#8138#8139#0" expanded="true" />
-            <element signature="e#8179#8180#0" expanded="true" />
-            <element signature="e#8221#8222#0" expanded="true" />
             <element signature="method#generateHeaders#0;class#Ingestor#0" />
-            <element signature="e#10506#10507#0" expanded="true" />
-            <element signature="e#10556#10557#0" expanded="true" />
             <element signature="method#readFile#0;class#Ingestor#0" />
             <element signature="method#awaitResponse#0;class#Ingestor#0" />
-            <element signature="e#11131#11132#0" expanded="true" />
-            <element signature="e#11168#11169#0" expanded="true" />
-            <element signature="e#11220#11221#0" expanded="true" />
-            <element signature="e#11262#11263#0" expanded="true" />
             <element signature="method#deleteDir#0;class#Ingestor#0" />
           </folding>
         </state>
@@ -851,8 +839,8 @@ reader.beginArray();</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/main/java/ToolsInterfaces/IngestorInterface.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+        <state relative-caret-position="255">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -861,8 +849,8 @@ reader.beginArray();</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/main/java/Tools/Importer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-846">
-          <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
+        <state relative-caret-position="561">
+          <caret line="52" selection-start-line="52" selection-end-line="52" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#createJwt#0;class#Importer#0" />
@@ -873,8 +861,8 @@ reader.beginArray();</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/main/java/API/API.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="101" lean-forward="true" selection-start-line="101" selection-end-line="101" />
+        <state relative-caret-position="1513">
+          <caret line="101" selection-start-line="101" selection-end-line="101" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -883,7 +871,7 @@ reader.beginArray();</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/main/java/Models/CreateBatchBody.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
+        <state relative-caret-position="323">
           <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -893,8 +881,8 @@ reader.beginArray();</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/main/java/Tools/Cataloguer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-409">
-          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+        <state relative-caret-position="221">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -904,7 +892,31 @@ reader.beginArray();</expression-string>
     <entry file="file://$PROJECT_DIR$/main/java/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
-          <caret line="11" column="33" lean-forward="true" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
+          <caret line="11" column="33" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main/java/ParameterClasses/Schema.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main/java/ToolsInterfaces/ImporterInterface.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main/java/Tools/Validator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="5" lean-forward="true" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

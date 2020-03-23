@@ -12,7 +12,7 @@ public class Main {
 //        System.out.println("FILES GENERATED: " + files.toString());
 
         Importer importer = new Importer();
-        String batchId = importer.uploadFileSync("test100MB.json", null, datasetId);
+        String batchId = importer.uploadFileSync("test100MB.json", datasetId);
         importer.getBatchStatus(batchId);
 
 //        String batchId = importer.createBatch(datasetId);

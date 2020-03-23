@@ -51,7 +51,7 @@ public class Importer implements ImporterInterface {
         schemaValidator = new Validator();
     }
 
-    private void createJwt() {
+    void createJwt() {
         //Set a time for the JWT to expire, 10 minutes from the current time
         Date exp = new Date();
         exp.setTime(exp.getTime() + 600000);
@@ -98,7 +98,7 @@ public class Importer implements ImporterInterface {
         this.exchangeJwtAuth();
     }
 
-    private void exchangeJwtAuth() {
+    void exchangeJwtAuth() {
         Call<AuthToken> call = API.getAuthService().getAuthToken(authInfo.getApiKey(), authInfo.getClientSecret(), authInfo.getJwt());
         call.enqueue(new Callback<AuthToken>(){
             @Override
@@ -132,7 +132,7 @@ public class Importer implements ImporterInterface {
      * @param datasetId is the id of the dataset to be uploaded to.
      * @return is the id of the batch created.
      */
-    public String uploadFile(String filename, Schema schema, String datasetId) {
+    public String uploadFile(String filename, String datasetId) {
         String batchId = createBatch(datasetId);
         addFileToBatch(batchId, datasetId, filename);
         closeBatch(batchId);
@@ -147,7 +147,7 @@ public class Importer implements ImporterInterface {
      * @param datasetId is the id of the dataset to be uploaded to.
      * @return is the id of the batch created.
      */
-    public String uploadFileSync(String filename, Schema schema, String datasetId) {
+    public String uploadFileSync(String filename, String datasetId) {
         String batchId = createBatch(datasetId);
         addFileToBatchSync(batchId, datasetId, filename);
         closeBatch(batchId);
