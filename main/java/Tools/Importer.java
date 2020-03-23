@@ -128,7 +128,6 @@ public class Importer implements ImporterInterface {
      * Asynchronously uploads a file to a given dataset.
      * It creates a new batch, adds the file to the batch, and signals the batch is complete.
      * @param filename is the name of the file to be uploaded.
-     * @param schema is the schema of the dataset being uploaded to.
      * @param datasetId is the id of the dataset to be uploaded to.
      * @return is the id of the batch created.
      */
@@ -143,7 +142,6 @@ public class Importer implements ImporterInterface {
      * Synchronously uploads a file to a given dataset.
      * It creates a new batch, adds the file to the batch, and signals the batch is complete.
      * @param filename is the name of the file to be uploaded.
-     * @param schema is the schema of the dataset being uploaded to.
      * @param datasetId is the id of the dataset to be uploaded to.
      * @return is the id of the batch created.
      */
