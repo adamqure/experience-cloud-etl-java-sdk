@@ -1,6 +1,7 @@
 package ToolsInterfaces;
 
 import ParameterClasses.*;
+import Exceptions.ParameterException;
 
 public interface ImporterInterface {
     String uploadFile(String filename, String datasetId);
